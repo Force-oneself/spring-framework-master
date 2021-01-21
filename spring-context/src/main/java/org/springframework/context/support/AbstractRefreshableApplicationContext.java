@@ -86,6 +86,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 * @param parent the parent context
 	 */
 	public AbstractRefreshableApplicationContext(@Nullable ApplicationContext parent) {
+		// 交由AbstractApplicationContext构造处理
 		super(parent);
 	}
 
