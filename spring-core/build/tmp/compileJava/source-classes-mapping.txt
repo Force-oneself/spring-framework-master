@@ -1,0 +1,68 @@
+org/springframework/core/codec/package-info.java
+ org.springframework.core.codec.package-info
+org/springframework/core/serializer/support/package-info.java
+ org.springframework.core.serializer.support.package-info
+org/springframework/core/convert/package-info.java
+ org.springframework.core.convert.package-info
+org/springframework/core/io/support/package-info.java
+ org.springframework.core.io.support.package-info
+org/springframework/lang/package-info.java
+ org.springframework.lang.package-info
+org/springframework/objenesis/package-info.java
+ org.springframework.objenesis.package-info
+org/springframework/util/xml/package-info.java
+ org.springframework.util.xml.package-info
+org/springframework/cglib/package-info.java
+ org.springframework.cglib.package-info
+org/springframework/core/convert/support/package-info.java
+ org.springframework.core.convert.support.package-info
+org/springframework/cglib/core/package-info.java
+ org.springframework.cglib.core.package-info
+org/springframework/core/annotation/package-info.java
+ org.springframework.core.annotation.package-info
+org/springframework/core/metrics/jfr/package-info.java
+ org.springframework.core.metrics.jfr.package-info
+org/springframework/core/serializer/package-info.java
+ org.springframework.core.serializer.package-info
+org/springframework/core/package-info.java
+ org.springframework.core.package-info
+org/springframework/util/package-info.java
+ org.springframework.util.package-info
+org/springframework/util/concurrent/package-info.java
+ org.springframework.util.concurrent.package-info
+org/springframework/core/io/package-info.java
+ org.springframework.core.io.package-info
+org/springframework/util/comparator/package-info.java
+ org.springframework.util.comparator.package-info
+org/springframework/core/style/package-info.java
+ org.springframework.core.style.package-info
+org/springframework/asm/package-info.java
+ org.springframework.asm.package-info
+org/springframework/core/metrics/package-info.java
+ org.springframework.core.metrics.package-info
+org/springframework/util/backoff/package-info.java
+ org.springframework.util.backoff.package-info
+org/springframework/core/type/package-info.java
+ org.springframework.core.type.package-info
+org/springframework/util/function/package-info.java
+ org.springframework.util.function.package-info
+org/springframework/core/convert/converter/package-info.java
+ org.springframework.core.convert.converter.package-info
+org/springframework/core/env/package-info.java
+ org.springframework.core.env.package-info
+org/springframework/core/task/package-info.java
+ org.springframework.core.task.package-info
+org/springframework/core/io/buffer/package-info.java
+ org.springframework.core.io.buffer.package-info
+org/springframework/core/log/package-info.java
+ org.springframework.core.log.package-info
+org/springframework/util/unit/package-info.java
+ org.springframework.util.unit.package-info
+org/springframework/core/task/support/package-info.java
+ org.springframework.core.task.support.package-info
+org/springframework/cglib/proxy/package-info.java
+ org.springframework.cglib.proxy.package-info
+org/springframework/core/type/classreading/package-info.java
+ org.springframework.core.type.classreading.package-info
+org/springframework/core/type/filter/package-info.java
+ org.springframework.core.type.filter.package-info
