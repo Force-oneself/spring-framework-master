@@ -6,9 +6,19 @@
 .project
 .settings
 
+# Gradle files
+.gradle/
+build/
+
+## hack for graddle wrapper
+!wrapper/*.jar
+!**/wrapper/*.jar
+
 # Compiled class file
 *.com  
-*.class  
+*.class
+*.war
+*.ear
 *.dll  
 *.exe  
 *.o  
