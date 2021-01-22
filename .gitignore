@@ -8,7 +8,14 @@
 
 # Gradle files
 .gradle/
-build/
+classes/
+/build
+buildSrc/build
+/spring-*/build
+/spring-core/kotlin-coroutines/build
+/framework-bom/build
+/integration-tests/build
+/src/asciidoc/build
 
 ## hack for graddle wrapper
 !wrapper/*.jar
