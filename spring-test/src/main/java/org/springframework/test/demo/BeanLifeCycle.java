@@ -11,7 +11,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 public class BeanLifeCycle {
 
 	public static void main(String[] args) {
-		ApplicationContext ac = new ClassPathXmlApplicationContext("spring-${username}.xml");
+		ClassPathXmlApplicationContext ac = new ClassPathXmlApplicationContext("spring-${username}.xml");
 		Object person = ac.getBean("person");
 
 	}
