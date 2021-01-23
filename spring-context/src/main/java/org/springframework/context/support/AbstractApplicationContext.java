@@ -561,6 +561,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 
 			// Tell the subclass to refresh the internal bean factory.
 			// 告诉子类刷新内部bean工厂
+			// 加载BeanDefinition
 			ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
 
 			// Prepare the bean factory for use in this context.
@@ -708,6 +709,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 	 */
 	protected void prepareBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		// Tell the internal bean factory to use the context's class loader etc.
+		// 告诉内部bean工厂使用上下文的类加载器等
 		beanFactory.setBeanClassLoader(getClassLoader());
 		// 由spring.spel.ignore系统属性控制的布尔标志，指示Spring忽略SpEL，即不初始化SpEL基础结构,默认值为“ false”。
 		if (!shouldIgnoreSpel) {
