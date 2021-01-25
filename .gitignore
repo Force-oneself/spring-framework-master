@@ -1,5 +1,6 @@
 ##ignore this file##
 .idea
+.github
 target/
 
 # IDEA artifacts and output dirs
