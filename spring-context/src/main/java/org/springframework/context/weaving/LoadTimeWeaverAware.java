@@ -20,8 +20,7 @@ import org.springframework.beans.factory.Aware;
 import org.springframework.instrument.classloading.LoadTimeWeaver;
 
 /**
- * Interface to be implemented by any object that wishes to be notified
- * of the application context's default {@link LoadTimeWeaver}.
+ * 希望由任何希望通过应用程序上下文的默认{@link LoadTimeWeaver}通知的对象实现的接口.
  *
  * @author Juergen Hoeller
  * @author Chris Beams

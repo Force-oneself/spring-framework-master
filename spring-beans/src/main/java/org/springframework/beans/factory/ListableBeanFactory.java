@@ -88,8 +88,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	String[] getBeanDefinitionNames();
 
 	/**
-	 * Return a provider for the specified bean, allowing for lazy on-demand retrieval
-	 * of instances, including availability and uniqueness options.
+	 * 返回指定bean的提供程序，允许对实例进行延迟的按需检索，包括可用性和唯一性选项.
 	 * @param requiredType type the bean must match; can be an interface or superclass
 	 * @param allowEagerInit whether stream-based access may initialize <i>lazy-init
 	 * singletons</i> and <i>objects created by FactoryBeans</i> (or by factory methods
@@ -104,8 +103,7 @@ public interface ListableBeanFactory extends BeanFactory {
 	<T> ObjectProvider<T> getBeanProvider(Class<T> requiredType, boolean allowEagerInit);
 
 	/**
-	 * Return a provider for the specified bean, allowing for lazy on-demand retrieval
-	 * of instances, including availability and uniqueness options.
+	 * 返回指定bean的提供程序，允许对实例进行延迟的按需检索，包括可用性和唯一性选项.
 	 * @param requiredType type the bean must match; can be a generic type declaration.
 	 * Note that collection types are not supported here, in contrast to reflective
 	 * injection points. For programmatically retrieving a list of beans matching a

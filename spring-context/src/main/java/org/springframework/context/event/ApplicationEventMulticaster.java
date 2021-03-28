@@ -68,7 +68,7 @@ public interface ApplicationEventMulticaster {
 	void removeAllListeners();
 
 	/**
-	 * Multicast the given application event to appropriate listeners.
+	 * 将给定的应用程序事件多播到适当的侦听器.
 	 * <p>Consider using {@link #multicastEvent(ApplicationEvent, ResolvableType)}
 	 * if possible as it provides better support for generics-based events.
 	 * @param event the event to multicast
