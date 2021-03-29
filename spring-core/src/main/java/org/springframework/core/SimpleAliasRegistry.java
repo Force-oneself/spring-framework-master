@@ -45,7 +45,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	/** Map from alias to canonical name. */
+	/** 从别名映射到规范名称. */
 	private final Map<String, String> aliasMap = new ConcurrentHashMap<>(16);
 
 
@@ -208,15 +208,16 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	 */
 	public String canonicalName(String name) {
 		String canonicalName = name;
-		// Handle aliasing...
+		// 处理别名...
 		String resolvedName;
 		do {
+			// 在别名库中查
 			resolvedName = this.aliasMap.get(canonicalName);
 			if (resolvedName != null) {
 				canonicalName = resolvedName;
 			}
-		}
-		while (resolvedName != null);
+			// TODO 这里是否会出现死循环（标准名称：标注名称）此时resolvedName永不为null，怎么解决的
+		} while (resolvedName != null);
 		return canonicalName;
 	}
 

@@ -894,7 +894,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return if there are property values values defined for this bean.
+	 * 返回是否存在为此bean定义的属性值的值.
 	 * @since 5.0.2
 	 */
 	@Override
@@ -1014,8 +1014,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	}
 
 	/**
-	 * Return whether this bean definition is 'synthetic', that is,
-	 * not defined by the application itself.
+	 * 返回此bean定义是否为“合成的”，即，不是由应用程序本身定义的.
 	 */
 	public boolean isSynthetic() {
 		return this.synthetic;

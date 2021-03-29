@@ -19,17 +19,13 @@ package org.springframework.beans.factory.support;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
- * Post-processor callback interface for <i>merged</i> bean definitions at runtime.
- * {@link BeanPostProcessor} implementations may implement this sub-interface in order
- * to post-process the merged bean definition (a processed copy of the original bean
- * definition) that the Spring {@code BeanFactory} uses to create a bean instance.
+ * 在运行时用于<i>合并的</i>Bean定义的后处理器回调接口。
+ * {@link BeanPostProcessor}实现可以实现此子接口，以便对Spring {@code BeanFactory}
+ * 用于创建bean实例的合并bean定义（原始bean定义的已处理副本）进行后处理。.
  *
- * <p>The {@link #postProcessMergedBeanDefinition} method may for example introspect
- * the bean definition in order to prepare some cached metadata before post-processing
- * actual instances of a bean. It is also allowed to modify the bean definition but
- * <i>only</i> for definition properties which are actually intended for concurrent
- * modification. Essentially, this only applies to operations defined on the
- * {@link RootBeanDefinition} itself but not to the properties of its base classes.
+ * <p>{@link #postProcessMergedBeanDefinition}方法例如可以内省* bean定义，以便在后处理
+ * bean的实际实例之前准备一些缓存的元数据。还允许修改bean定义，但仅用于实际用于并发修改的定义属性。
+ * 本质上，这仅适用于{@link RootBeanDefinition}本身定义的操作，不适用于其基类的属性.
  *
  * @author Juergen Hoeller
  * @since 2.5
@@ -38,7 +34,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 public interface MergedBeanDefinitionPostProcessor extends BeanPostProcessor {
 
 	/**
-	 * Post-process the given merged bean definition for the specified bean.
+	 * 对指定bean的给定合并bean定义进行后处理.
 	 * @param beanDefinition the merged bean definition for the bean
 	 * @param beanType the actual type of the managed bean instance
 	 * @param beanName the name of the bean
@@ -47,9 +43,7 @@ public interface MergedBeanDefinitionPostProcessor extends BeanPostProcessor {
 	void postProcessMergedBeanDefinition(RootBeanDefinition beanDefinition, Class<?> beanType, String beanName);
 
 	/**
-	 * A notification that the bean definition for the specified name has been reset,
-	 * and that this post-processor should clear any metadata for the affected bean.
-	 * <p>The default implementation is empty.
+	 * 通知，用于指定名称的Bean定义已被重置，并且此后处理器应清除受影响的Bean的所有元数据。<p>默认实现为空.
 	 * @param beanName the name of the bean
 	 * @since 5.1
 	 * @see DefaultListableBeanFactory#resetBeanDefinition
