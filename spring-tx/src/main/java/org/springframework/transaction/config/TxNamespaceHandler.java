@@ -21,17 +21,10 @@ import org.w3c.dom.Element;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
- * {@code NamespaceHandler} allowing for the configuration of
- * declarative transaction management using either XML or using annotations.
- *
- * <p>This namespace handler is the central piece of functionality in the
- * Spring transaction management facilities and offers two approaches
- * to declaratively manage transactions.
- *
- * <p>One approach uses transaction semantics defined in XML using the
- * {@code <tx:advice>} elements, the other uses annotations
- * in combination with the {@code <tx:annotation-driven>} element.
- * Both approached are detailed to great extent in the Spring reference manual.
+ * {@code NamespaceHandler}允许使用XML或注释配置声明式事务管理。
+ * <p>此名称空间处理程序是Spring事务管理功能中的核心功能，并提供两种方法以声明方式管理事务。
+ * <p>一种方法使用XML使用{{@code <tx：advice>}元素定义的事务语义，另一种方法将注释与
+ * {@code <tx：annotation-driven>}元素结合使用。两种方法都在Spring参考手册中进行了详细说明.
  *
  * @author Rob Harrop
  * @author Juergen Hoeller

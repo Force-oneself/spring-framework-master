@@ -92,13 +92,12 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  */
 public class IsolationLevelDataSourceRouter extends AbstractRoutingDataSource {
 
-	/** Constants instance for TransactionDefinition. */
+	/** TransactionDefinition的常量实例. */
 	private static final Constants constants = new Constants(TransactionDefinition.class);
 
 
 	/**
-	 * Supports Integer values for the isolation level constants
-	 * as well as isolation level names as defined on the
+	 * S支持隔离级别常量的整数值，以及在上定义的隔离级别名称
 	 * {@link org.springframework.transaction.TransactionDefinition TransactionDefinition interface}.
 	 */
 	@Override

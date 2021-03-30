@@ -34,15 +34,10 @@ import org.springframework.util.ClassUtils;
 
 /**
  * {@link org.springframework.beans.factory.xml.BeanDefinitionParser
- * BeanDefinitionParser} implementation that allows users to easily configure
- * all the infrastructure beans required to enable annotation-driven transaction
- * demarcation.
+ * BeanDefinitionParser}实现，允许用户轻松配置启用注释驱动的事务所需的所有基础结构bean划分.
  *
- * <p>By default, all proxies are created as JDK proxies. This may cause some
- * problems if you are injecting objects as concrete classes rather than
- * interfaces. To overcome this restriction you can set the
- * '{@code proxy-target-class}' attribute to '{@code true}', which
- * will result in class-based proxies being created.
+ * <p>默认情况下，所有代理均创建为JDK代理。如果将对象作为具体的类而不是接口注入，可能会引起一些问题。
+ * 要克服此限制，您可以将'{@code proxy-target-class}'属性设置为'{@code true}'，这将导致创建基于类的代理.
  *
  * @author Juergen Hoeller
  * @author Rob Harrop
@@ -114,25 +109,26 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 
 
 	/**
-	 * Inner class to just introduce an AOP framework dependency when actually in proxy mode.
+	 * 内部类，仅在实际处于代理模式时才引入AOP框架依赖项.
 	 */
 	private static class AopAutoProxyConfigurer {
 
 		public static void configureAutoProxyCreator(Element element, ParserContext parserContext) {
+			// 注册 InfrastructureAdvisorAutoProxyCreator 类
 			AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);
 
 			String txAdvisorBeanName = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME;
 			if (!parserContext.getRegistry().containsBeanDefinition(txAdvisorBeanName)) {
 				Object eleSource = parserContext.extractSource(element);
 
-				// Create the TransactionAttributeSource definition.
+				// 创建TransactionAttributeSource定义.
 				RootBeanDefinition sourceDef = new RootBeanDefinition(
 						"org.springframework.transaction.annotation.AnnotationTransactionAttributeSource");
 				sourceDef.setSource(eleSource);
 				sourceDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
 
-				// Create the TransactionInterceptor definition.
+				// 创建TransactionInterceptor定义.
 				RootBeanDefinition interceptorDef = new RootBeanDefinition(TransactionInterceptor.class);
 				interceptorDef.setSource(eleSource);
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
@@ -140,7 +136,7 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				interceptorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
 				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
 
-				// Create the TransactionAttributeSourceAdvisor definition.
+				// 创建TransactionAttributeSourceAdvisor定义.
 				RootBeanDefinition advisorDef = new RootBeanDefinition(BeanFactoryTransactionAttributeSourceAdvisor.class);
 				advisorDef.setSource(eleSource);
 				advisorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
