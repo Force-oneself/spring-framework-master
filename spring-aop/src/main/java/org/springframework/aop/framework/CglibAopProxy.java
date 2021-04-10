@@ -83,7 +83,7 @@ import org.springframework.util.ReflectionUtils;
 @SuppressWarnings("serial")
 class CglibAopProxy implements AopProxy, Serializable {
 
-	// Constants for CGLIB callback array indices
+	// CGLIB回调数组索引的常量
 	private static final int AOP_PROXY = 0;
 	private static final int INVOKE_TARGET = 1;
 	private static final int NO_OVERRIDE = 2;
@@ -96,16 +96,17 @@ class CglibAopProxy implements AopProxy, Serializable {
 	/** Logger available to subclasses; static to optimize serialization. */
 	protected static final Log logger = LogFactory.getLog(CglibAopProxy.class);
 
-	/** Keeps track of the Classes that we have validated for final methods. */
+	/** 跟踪我们为最终方法验证的类. */
 	private static final Map<Class<?>, Boolean> validatedClasses = new WeakHashMap<>();
 
 
-	/** The configuration used to configure this proxy. */
+	/** 用于配置此代理的配置. */
 	protected final AdvisedSupport advised;
 
+	// 构造器参数
 	@Nullable
 	protected Object[] constructorArgs;
-
+	// 构造器参数类型
 	@Nullable
 	protected Class<?>[] constructorArgTypes;
 
@@ -174,10 +175,10 @@ class CglibAopProxy implements AopProxy, Serializable {
 				}
 			}
 
-			// Validate the class, writing log messages as necessary.
+			// 验证该类，并根据需要编写日志消息。
 			validateClassIfNecessary(proxySuperClass, classLoader);
 
-			// Configure CGLIB Enhancer...
+			// 配置CGLIB增强器...
 			Enhancer enhancer = createEnhancer();
 			if (classLoader != null) {
 				enhancer.setClassLoader(classLoader);

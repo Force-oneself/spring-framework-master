@@ -263,8 +263,7 @@ public abstract class TransactionSynchronizationManager {
 	//-------------------------------------------------------------------------
 
 	/**
-	 * Return if transaction synchronization is active for the current thread.
-	 * Can be called before register to avoid unnecessary instance creation.
+	 * 如果当前线程的事务同步处于活动状态，则返回。可以在注册之前调用以避免不必要的实例创建.
 	 *
 	 * @see #registerSynchronization
 	 */
@@ -425,9 +424,7 @@ public abstract class TransactionSynchronizationManager {
 	}
 
 	/**
-	 * Return the isolation level for the current transaction, if any.
-	 * To be called by resource management code when preparing a newly
-	 * created resource (for example, a JDBC Connection).
+	 * 返回当前事务的隔离级别（如果有）。准备新创建的资源（例如JDBC连接）时，由资源管理代码调用.
 	 *
 	 * @return the currently exposed isolation level, according to the
 	 * JDBC Connection constants (equivalent to the corresponding Spring

@@ -36,12 +36,12 @@ public interface AspectJPrecedenceInformation extends Ordered {
 	// its advice for aspects with non-singleton instantiation models.
 
 	/**
-	 * Return the name of the aspect (bean) in which the advice was declared.
+	 * 返回声明已在其中声明的方面（bean）的名称.
 	 */
 	String getAspectName();
 
 	/**
-	 * Return the declaration order of the advice member within the aspect.
+	 * 返回方面内建议成员的声明顺序.
 	 */
 	int getDeclarationOrder();
 

@@ -72,8 +72,7 @@ public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
 	}
 
 	/**
-	 * In AspectJ semantics, after throwing advice that specifies a throwing clause
-	 * is only invoked if the thrown exception is a subtype of the given throwing type.
+	 * 在AspectJ语义中，仅当抛出的异常是给定抛出类型的子类型时，才调用指定抛出子句的建议之后.
 	 */
 	private boolean shouldInvokeOnThrowing(Throwable ex) {
 		return getDiscoveredThrowingType().isAssignableFrom(ex.getClass());

@@ -69,40 +69,36 @@ public class AspectJAfterReturningAdvice extends AbstractAspectJAdvice
 
 
 	/**
-	 * Following AspectJ semantics, if a returning clause was specified, then the
-	 * advice is only invoked if the returned value is an instance of the given
-	 * returning type and generic type parameters, if any, match the assignment
-	 * rules. If the returning type is Object, the advice is *always* invoked.
+	 * 根据AspectJ语义，如果指定了返回子句，则仅在返回值是给定返回类型的实例且泛型类型参数（如果有）
+	 * 匹配分配规则的情况下才调用建议。如果返回类型为Object，则始终调用advise.
+	 *
 	 * @param returnValue the return value of the target method
 	 * @return whether to invoke the advice method for the given return value
 	 */
 	private boolean shouldInvokeOnReturnValueOf(Method method, @Nullable Object returnValue) {
 		Class<?> type = getDiscoveredReturningType();
 		Type genericType = getDiscoveredReturningGenericType();
-		// If we aren't dealing with a raw type, check if generic parameters are assignable.
+		// 如果我们不处理原始类型，请检查泛型参数是否可分配.
 		return (matchesReturnValue(type, method, returnValue) &&
 				(genericType == null || genericType == type ||
 						TypeUtils.isAssignable(genericType, method.getGenericReturnType())));
 	}
 
 	/**
-	 * Following AspectJ semantics, if a return value is null (or return type is void),
-	 * then the return type of target method should be used to determine whether advice
-	 * is invoked or not. Also, even if the return type is void, if the type of argument
-	 * declared in the advice method is Object, then the advice must still get invoked.
-	 * @param type the type of argument declared in advice method
-	 * @param method the advice method
+	 * 根据AspectJ语义，如果返回值为null（或返回类型为void），则应使用target方法的返回类型来确定是否调用通知。
+	 * 同样，即使返回类型为空，如果advice方法中声明的参数类型为Object，则该通知仍必须被调用.
+	 *
+	 * @param type        the type of argument declared in advice method
+	 * @param method      the advice method
 	 * @param returnValue the return value of the target method
 	 * @return whether to invoke the advice method for the given return value and type
 	 */
 	private boolean matchesReturnValue(Class<?> type, Method method, @Nullable Object returnValue) {
 		if (returnValue != null) {
 			return ClassUtils.isAssignableValue(type, returnValue);
-		}
-		else if (Object.class == type && void.class == method.getReturnType()) {
+		} else if (Object.class == type && void.class == method.getReturnType()) {
 			return true;
-		}
-		else {
+		} else {
 			return ClassUtils.isAssignable(type, method.getReturnType());
 		}
 	}
