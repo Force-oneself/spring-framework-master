@@ -267,10 +267,12 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		if (!this.registriesPostProcessed.contains(factoryId)) {
 			// BeanDefinitionRegistryPostProcessor hook apparently not supported...
 			// Simply call processConfigurationClasses lazily at this point then.
+			// TODO 又要延续套娃
 			processConfigBeanDefinitions((BeanDefinitionRegistry) beanFactory);
 		}
 
 		enhanceConfigurationClasses(beanFactory);
+		// 就注入一个处理ImportAware的回调事件
 		beanFactory.addBeanPostProcessor(new ImportAwareBeanPostProcessor(beanFactory));
 	}
 
@@ -342,7 +344,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 			StartupStep processConfig = this.applicationStartup.start("spring.context.config-classes.parse");
 			// 解析@Configuration类
 			parser.parse(candidates);
-			// 校验解析出来的类
+			// 校验
 			parser.validate();
 
 			Set<ConfigurationClass> configClasses = new LinkedHashSet<>(parser.getConfigurationClasses());
@@ -378,6 +380,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 				candidateNames = newCandidateNames;
 			}
 		}
+		// TODO 又是套娃
 		while (!candidates.isEmpty());
 
 		// Register the ImportRegistry as a bean in order to support ImportAware @Configuration classes
