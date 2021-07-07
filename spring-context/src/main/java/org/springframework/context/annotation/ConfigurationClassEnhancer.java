@@ -90,8 +90,8 @@ class ConfigurationClassEnhancer {
 
 
 	/**
-	 * Loads the specified class and generates a CGLIB subclass of it equipped with
-	 * container-aware callbacks capable of respecting scoping and other bean semantics.
+	 * 加载指定的类并生成其配备的 CGLIB 子类
+	 * 能够尊重作用域和其他 bean 语义的容器感知回调.
 	 * @return the enhanced subclass
 	 */
 	public Class<?> enhance(Class<?> configClass, @Nullable ClassLoader classLoader) {
