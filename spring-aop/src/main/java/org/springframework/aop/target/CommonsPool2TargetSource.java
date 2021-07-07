@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.aop.targets;
+package org.springframework.aop.target;
 
 import org.apache.commons.pool2.ObjectPool;
 import org.apache.commons.pool2.PooledObject;

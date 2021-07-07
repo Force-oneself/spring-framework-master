@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.aop.targets.dynamic;
+package org.springframework.aop.target.dynamic;
 
 /**
  * Interface to be implemented by dynamic target objects,

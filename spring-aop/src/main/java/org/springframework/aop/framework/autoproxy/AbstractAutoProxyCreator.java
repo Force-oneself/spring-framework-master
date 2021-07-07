@@ -165,7 +165,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	/**
 	 * Set custom {@code TargetSourceCreators} to be applied in this order.
-	 * If the list is empty, or they all return null, a {@link org.springframework.aop.targets.SingletonTargetSource}
+	 * If the list is empty, or they all return null, a {@link org.springframework.aop.target.SingletonTargetSource}
 	 * will be created for each bean.
 	 * <p>Note that TargetSourceCreators will kick in even for target beans
 	 * where no advices or advisors have been found. If a {@code TargetSourceCreator}

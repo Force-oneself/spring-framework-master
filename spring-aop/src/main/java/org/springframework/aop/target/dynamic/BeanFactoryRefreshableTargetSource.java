@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.aop.targets.dynamic;
+package org.springframework.aop.target.dynamic;
 
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.util.Assert;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.aop.targets.dynamic;
+package org.springframework.aop.target.dynamic;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.springframework.aop.targets;
+package org.springframework.aop.target;
 
 import java.util.HashSet;
 import java.util.Set;

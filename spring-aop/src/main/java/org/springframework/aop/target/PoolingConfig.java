@@ -14,25 +14,31 @@
  * limitations under the License.
  */
 
-package org.springframework.aop.targets;
+package org.springframework.aop.target;
 
 /**
- * Simple {@link org.springframework.aop.TargetSource} implementation,
- * freshly obtaining the specified target bean from its containing
- * Spring {@link org.springframework.beans.factory.BeanFactory}.
+ * Config interface for a pooling target source.
  *
- * <p>Can obtain any kind of target bean: singleton, scoped, or prototype.
- * Typically used for scoped beans.
- *
+ * @author Rod Johnson
  * @author Juergen Hoeller
- * @since 2.0.3
  */
-@SuppressWarnings("serial")
-public class SimpleBeanTargetSource extends AbstractBeanFactoryBasedTargetSource {
+public interface PoolingConfig {
 
-	@Override
-	public Object getTarget() throws Exception {
-		return getBeanFactory().getBean(getTargetBeanName());
-	}
+	/**
+	 * Return the maximum size of the pool.
+	 */
+	int getMaxSize();
+
+	/**
+	 * Return the number of active objects in the pool.
+	 * @throws UnsupportedOperationException if not supported by the pool
+	 */
+	int getActiveCount() throws UnsupportedOperationException;
+
+	/**
+	 * Return the number of idle objects in the pool.
+	 * @throws UnsupportedOperationException if not supported by the pool
+	 */
+	int getIdleCount() throws UnsupportedOperationException;
 
 }
