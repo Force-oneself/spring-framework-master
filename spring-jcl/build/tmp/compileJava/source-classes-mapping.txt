@@ -1,0 +1,27 @@
+org/apache/commons/logging/LogAdapter.java
+ org.apache.commons.logging.LogAdapter
+ org.apache.commons.logging.LogAdapter$1
+ org.apache.commons.logging.LogAdapter$JavaUtilAdapter
+ org.apache.commons.logging.LogAdapter$JavaUtilLog
+ org.apache.commons.logging.LogAdapter$LocationResolvingLogRecord
+ org.apache.commons.logging.LogAdapter$Log4jAdapter
+ org.apache.commons.logging.LogAdapter$Log4jLog
+ org.apache.commons.logging.LogAdapter$LogApi
+ org.apache.commons.logging.LogAdapter$Slf4jAdapter
+ org.apache.commons.logging.LogAdapter$Slf4jLocationAwareLog
+ org.apache.commons.logging.LogAdapter$Slf4jLog
+org/apache/commons/logging/LogFactoryService.java
+ org.apache.commons.logging.LogFactoryService
+org/apache/commons/logging/package-info.java
+ org.apache.commons.logging.package-info
+org/apache/commons/logging/impl/SimpleLog.java
+ org.apache.commons.logging.impl.SimpleLog
+org/apache/commons/logging/Log.java
+ org.apache.commons.logging.Log
+org/apache/commons/logging/impl/package-info.java
+ org.apache.commons.logging.impl.package-info
+org/apache/commons/logging/impl/NoOpLog.java
+ org.apache.commons.logging.impl.NoOpLog
+org/apache/commons/logging/LogFactory.java
+ org.apache.commons.logging.LogFactory
+ org.apache.commons.logging.LogFactory$1

@@ -1,0 +1,68 @@
+org/springframework/oxm/support/package-info.java
+ org.springframework.oxm.support.package-info
+org/springframework/oxm/XmlMappingException.java
+ org.springframework.oxm.XmlMappingException
+org/springframework/oxm/config/OxmNamespaceHandler.java
+ org.springframework.oxm.config.OxmNamespaceHandler
+org/springframework/oxm/support/MarshallingSource.java
+ org.springframework.oxm.support.MarshallingSource
+ org.springframework.oxm.support.MarshallingSource$1
+ org.springframework.oxm.support.MarshallingSource$MarshallingXMLReader
+org/springframework/oxm/mime/MimeMarshaller.java
+ org.springframework.oxm.mime.MimeMarshaller
+org/springframework/oxm/Unmarshaller.java
+ org.springframework.oxm.Unmarshaller
+org/springframework/oxm/UncategorizedMappingException.java
+ org.springframework.oxm.UncategorizedMappingException
+org/springframework/oxm/jibx/JibxMarshaller.java
+ org.springframework.oxm.jibx.JibxMarshaller
+org/springframework/oxm/config/package-info.java
+ org.springframework.oxm.config.package-info
+org/springframework/oxm/xstream/CatchAllConverter.java
+ org.springframework.oxm.xstream.CatchAllConverter
+org/springframework/oxm/jaxb/package-info.java
+ org.springframework.oxm.jaxb.package-info
+org/springframework/oxm/xstream/package-info.java
+ org.springframework.oxm.xstream.package-info
+org/springframework/oxm/jaxb/Jaxb2Marshaller.java
+ org.springframework.oxm.jaxb.Jaxb2Marshaller
+ org.springframework.oxm.jaxb.Jaxb2Marshaller$ByteArrayDataSource
+ org.springframework.oxm.jaxb.Jaxb2Marshaller$Jaxb2AttachmentMarshaller
+ org.springframework.oxm.jaxb.Jaxb2Marshaller$Jaxb2AttachmentUnmarshaller
+org/springframework/oxm/Marshaller.java
+ org.springframework.oxm.Marshaller
+org/springframework/oxm/support/SaxResourceUtils.java
+ org.springframework.oxm.support.SaxResourceUtils
+org/springframework/oxm/MarshallingFailureException.java
+ org.springframework.oxm.MarshallingFailureException
+org/springframework/oxm/support/AbstractMarshaller.java
+ org.springframework.oxm.support.AbstractMarshaller
+org/springframework/oxm/jibx/package-info.java
+ org.springframework.oxm.jibx.package-info
+org/springframework/oxm/jaxb/ClassPathJaxb2TypeScanner.java
+ org.springframework.oxm.jaxb.ClassPathJaxb2TypeScanner
+org/springframework/oxm/mime/MimeUnmarshaller.java
+ org.springframework.oxm.mime.MimeUnmarshaller
+org/springframework/oxm/mime/package-info.java
+ org.springframework.oxm.mime.package-info
+org/springframework/oxm/mime/MimeContainer.java
+ org.springframework.oxm.mime.MimeContainer
+org/springframework/oxm/config/Jaxb2MarshallerBeanDefinitionParser.java
+ org.springframework.oxm.config.Jaxb2MarshallerBeanDefinitionParser
+org/springframework/oxm/config/JibxMarshallerBeanDefinitionParser.java
+ org.springframework.oxm.config.JibxMarshallerBeanDefinitionParser
+org/springframework/oxm/xstream/XStreamMarshaller.java
+ org.springframework.oxm.xstream.XStreamMarshaller
+ org.springframework.oxm.xstream.XStreamMarshaller$1
+org/springframework/oxm/ValidationFailureException.java
+ org.springframework.oxm.ValidationFailureException
+org/springframework/oxm/GenericUnmarshaller.java
+ org.springframework.oxm.GenericUnmarshaller
+org/springframework/oxm/GenericMarshaller.java
+ org.springframework.oxm.GenericMarshaller
+org/springframework/oxm/package-info.java
+ org.springframework.oxm.package-info
+org/springframework/oxm/MarshallingException.java
+ org.springframework.oxm.MarshallingException
+org/springframework/oxm/UnmarshallingFailureException.java
+ org.springframework.oxm.UnmarshallingFailureException
