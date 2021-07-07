@@ -37,7 +37,6 @@ import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.framework.ProxyProcessorSupport;
 import org.springframework.aop.framework.adapter.AdvisorAdapterRegistry;
 import org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry;
-import org.springframework.aop.target.SingletonTargetSource;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -166,7 +165,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	/**
 	 * Set custom {@code TargetSourceCreators} to be applied in this order.
-	 * If the list is empty, or they all return null, a {@link SingletonTargetSource}
+	 * If the list is empty, or they all return null, a {@link org.springframework.aop.targets.SingletonTargetSource}
 	 * will be created for each bean.
 	 * <p>Note that TargetSourceCreators will kick in even for target beans
 	 * where no advices or advisors have been found. If a {@code TargetSourceCreator}
@@ -333,7 +332,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
 			Object proxy = createProxy(
-					bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));
+					bean.getClass(), beanName, specificInterceptors, new org.springframework.aop.target.SingletonTargetSource(bean));
 			this.proxyTypes.put(cacheKey, proxy.getClass());
 			return proxy;
 		}

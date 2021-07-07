@@ -129,7 +129,7 @@ public class EventListenerMethodProcessor
 					type = AutoProxyUtils.determineTargetClass(beanFactory, beanName);
 				}
 				catch (Throwable ex) {
-					// An unresolvable bean type, probably from a lazy bean - let's ignore it.
+					// 一个无法解析的 bean 类型，可能来自一个惰性 bean - 让我们忽略它.
 					if (logger.isDebugEnabled()) {
 						logger.debug("Could not resolve target class for bean with name '" + beanName + "'", ex);
 					}
@@ -187,7 +187,7 @@ public class EventListenerMethodProcessor
 				}
 			}
 			else {
-				// Non-empty set of methods
+				// 非空方法集
 				ConfigurableApplicationContext context = this.applicationContext;
 				Assert.state(context != null, "No ApplicationContext set");
 				List<EventListenerFactory> factories = this.eventListenerFactories;

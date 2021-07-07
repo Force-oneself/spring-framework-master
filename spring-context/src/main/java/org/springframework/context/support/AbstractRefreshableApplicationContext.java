@@ -131,7 +131,7 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			beanFactory.setSerializationId(getId());
 			// 允许子类拓展自定义allowBeanDefinitionOverriding和allowCircularReferences
 			customizeBeanFactory(beanFactory);
-			// 加载BeanDefinition
+			// 加载BeanDefinition(xml的启动就是从这里注入BeanDefinition的, 后续拓展其他文件形式注入都可以参考xml进行改写)
 			loadBeanDefinitions(beanFactory);
 			this.beanFactory = beanFactory;
 		}
