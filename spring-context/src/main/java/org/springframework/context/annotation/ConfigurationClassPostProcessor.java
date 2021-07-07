@@ -291,14 +291,15 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 					logger.debug("Bean definition has already been processed as a configuration class: " + beanDef);
 				}
 			}
-			// 检查BeanDefinition是否有@Configuration标注
+			// 检查BeanDefinition是否有@Configuration, @Component, @ComponentScan, @Import, @ImportResource
+			// or @Bean method标注
 			else if (ConfigurationClassUtils.checkConfigurationClassCandidate(beanDef, this.metadataReaderFactory)) {
 				configCandidates.add(new BeanDefinitionHolder(beanDef, beanName));
 			}
 		}
 
 		// Return immediately if no @Configuration classes were found
-		// 这里没有找到@Configuration标注的类就直接return
+		// 这里没有找到直接return
 		if (configCandidates.isEmpty()) {
 			return;
 		}
