@@ -259,6 +259,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			throws BeanCreationException {
 
 		// Let's check for lookup methods here...
+		// 处理@Lookup的方法
 		if (!this.lookupMethodsChecked.contains(beanName)) {
 			if (AnnotationUtils.isCandidateClass(beanClass, Lookup.class)) {
 				try {
@@ -280,6 +281,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 								}
 							}
 						});
+						// 查父类, 和@Autowired一样, 父类同样带@Lookup也会被覆盖
 						targetClass = targetClass.getSuperclass();
 					}
 					while (targetClass != null && targetClass != Object.class);
@@ -292,7 +294,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			this.lookupMethodsChecked.add(beanName);
 		}
 
-		// Quick check on the concurrent map first, with minimal locking.
+		// 首先快速检查并发map，使用最少的锁定.
 		Constructor<?>[] candidateConstructors = this.candidateConstructorsCache.get(beanClass);
 		if (candidateConstructors == null) {
 			// Fully synchronized resolution now...
@@ -396,6 +398,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
 		InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
 		try {
+			// 注入属性
 			metadata.inject(bean, beanName, pvs);
 		}
 		catch (BeanCreationException ex) {
@@ -440,9 +443,9 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 
 	private InjectionMetadata findAutowiringMetadata(String beanName, Class<?> clazz, @Nullable PropertyValues pvs) {
-		// Fall back to class name as cache key, for backwards compatibility with custom callers.
+		// 回退到类名作为缓存键，以便与自定义调用者向后兼容。
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
-		// Quick check on the concurrent map first, with minimal locking.
+		// 首先快速检查并发map，使用最少的锁定.
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 			synchronized (this.injectionMetadataCache) {
@@ -473,6 +476,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
 				MergedAnnotation<?> ann = findAutowiredAnnotation(field);
 				if (ann != null) {
+					// 不支持static字段注入
 					if (Modifier.isStatic(field.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static fields: " + field);
@@ -491,6 +495,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				}
 				MergedAnnotation<?> ann = findAutowiredAnnotation(bridgedMethod);
 				if (ann != null && method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) {
+					// 不支持static字段注入
 					if (Modifier.isStatic(method.getModifiers())) {
 						if (logger.isInfoEnabled()) {
 							logger.info("Autowired annotation is not supported on static methods: " + method);
@@ -510,6 +515,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			});
 
 			elements.addAll(0, currElements);
+			// 开始遍历父类（说明子类注入时,父类添加了@Autowired也会自动注入）
 			targetClass = targetClass.getSuperclass();
 		}
 		while (targetClass != null && targetClass != Object.class);

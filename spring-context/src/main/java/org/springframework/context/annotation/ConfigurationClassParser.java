@@ -166,6 +166,10 @@ class ConfigurationClassParser {
 	}
 
 
+	/**
+	 * 这里解析的类,并非是只有@Configuration注解的类，其他一些特殊都会进入到这里执行
+	 * @param configCandidates 符合条件的候选类
+	 */
 	public void parse(Set<BeanDefinitionHolder> configCandidates) {
 		for (BeanDefinitionHolder holder : configCandidates) {
 			BeanDefinition bd = holder.getBeanDefinition();
