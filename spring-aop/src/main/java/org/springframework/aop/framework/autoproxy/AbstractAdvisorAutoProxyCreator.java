@@ -103,8 +103,8 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	}
 
 	/**
-	 * Find all candidate Advisors to use in auto-proxying.
-	 * @return the List of candidate Advisors
+	 * 查找所有候选顾问以用于自动代理。
+	 * @return 候选顾问名单
 	 */
 	protected List<Advisor> findCandidateAdvisors() {
 		Assert.state(this.advisorRetrievalHelper != null, "No BeanFactoryAdvisorRetrievalHelper available");
