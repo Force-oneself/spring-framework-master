@@ -39,12 +39,12 @@ public class BeanConfig {
         return new ChildBean(autowiredBean());
     }
 
-//    @Bean
+    @Bean
     public AopBean aopBean() {
         return new AopBean();
     }
 
-    @Bean
+//    @Bean
     public DemoFactoryBean demoFactoryBean() {
         return new DemoFactoryBean();
     }

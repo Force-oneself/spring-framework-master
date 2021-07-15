@@ -16,29 +16,7 @@
 
 package org.springframework.beans.factory.support;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.function.Supplier;
-
 import org.apache.commons.logging.Log;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -83,6 +61,27 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.ReflectionUtils.MethodCallback;
 import org.springframework.util.StringUtils;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.function.Supplier;
 
 /**
  * Abstract bean factory superclass that implements default bean creation,
@@ -299,7 +298,6 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * For further types to ignore, invoke this method for each type.
 	 *
 	 * @see org.springframework.beans.factory.BeanFactoryAware
-	 * @see org.springframework.context.ApplicationContextAware
 	 */
 	public void ignoreDependencyInterface(Class<?> ifc) {
 		this.ignoredDependencyInterfaces.add(ifc);
@@ -435,7 +433,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeansException {
 
 		Object result = existingBean;
-		// TODO Spring拓展点：BeanPostProcessor调用postProcessBeforeInitialization
+		// Force-Spring 拓展点：BeanPostProcessor调用postProcessBeforeInitialization
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessBeforeInitialization(result, beanName);
 			if (current == null) {
@@ -449,7 +447,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	@Override
 	public Object applyBeanPostProcessorsAfterInitialization(Object existingBean, String beanName)
 			throws BeansException {
-		// TODO Spring拓展点：BeanPostProcessor调用postProcessAfterInitialization
+		// Force-Spring 拓展点：BeanPostProcessor调用postProcessAfterInitialization
 		Object result = existingBean;
 		for (BeanPostProcessor processor : getBeanPostProcessors()) {
 			Object current = processor.postProcessAfterInitialization(result, beanName);
@@ -1029,7 +1027,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
 		Object exposedObject = bean;
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
-			// TODO Spring拓展点：SmartInstantiationAwareBeanPostProcessor调用getEarlyBeanReference
+			// Force-Spring 拓展点：SmartInstantiationAwareBeanPostProcessor调用getEarlyBeanReference
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
 				// 多个SmartInstantiationAwareBeanPostProcessor将会后者覆盖前者
 				exposedObject = bp.getEarlyBeanReference(exposedObject, beanName);
@@ -1153,7 +1151,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see MergedBeanDefinitionPostProcessor#postProcessMergedBeanDefinition
 	 */
 	protected void applyMergedBeanDefinitionPostProcessors(RootBeanDefinition mbd, Class<?> beanType, String beanName) {
-		// TODO Spring拓展点：MergedBeanDefinitionPostProcessor调用postProcessMergedBeanDefinition
+		// Force-Spring 拓展点：MergedBeanDefinitionPostProcessor调用postProcessMergedBeanDefinition
 		for (MergedBeanDefinitionPostProcessor processor : getBeanPostProcessorCache().mergedDefinition) {
 			processor.postProcessMergedBeanDefinition(mbd, beanType, beanName);
 		}
@@ -1202,7 +1200,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 */
 	@Nullable
 	protected Object applyBeanPostProcessorsBeforeInstantiation(Class<?> beanClass, String beanName) {
-		// TODO Spring拓展点：InstantiationAwareBeanPostProcessor调用postProcessBeforeInstantiation
+		// Force-Spring 拓展点：InstantiationAwareBeanPostProcessor调用postProcessBeforeInstantiation
 		for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 			Object result = bp.postProcessBeforeInstantiation(beanClass, beanName);
 			if (result != null) {
@@ -1355,7 +1353,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			throws BeansException {
 
 		if (beanClass != null && hasInstantiationAwareBeanPostProcessors()) {
-			// TODO Spring拓展点：SmartInstantiationAwareBeanPostProcessor调用determineCandidateConstructors
+			// Force-Spring 拓展点：SmartInstantiationAwareBeanPostProcessor调用determineCandidateConstructors
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
 				Constructor<?>[] ctors = bp.determineCandidateConstructors(beanClass, beanName);
 				if (ctors != null) {
@@ -1453,7 +1451,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 在设置属性之前，使所有InstantiationAwareBeanPostProcessor都有机会修改
 		// bean的状态。例如，它可以用于支持字段注入的样式
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
-			// TODO Spring拓展点：InstantiationAwareBeanPostProcessor调用postProcessAfterInstantiation
+			// Force-Spring 拓展点：InstantiationAwareBeanPostProcessor调用postProcessAfterInstantiation
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				if (!bp.postProcessAfterInstantiation(bw.getWrappedInstance(), beanName)) {
 					return;
@@ -1485,7 +1483,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			if (pvs == null) {
 				pvs = mbd.getPropertyValues();
 			}
-			// TODO Spring拓展点：InstantiationAwareBeanPostProcessor调用postProcessProperties，postProcessPropertyValues
+			// Force-Spring 拓展点：InstantiationAwareBeanPostProcessor调用postProcessProperties，postProcessPropertyValues
 			for (InstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().instantiationAware) {
 				PropertyValues pvsToUse = bp.postProcessProperties(pvs, bw.getWrappedInstance(), beanName);
 				if (pvsToUse == null) {
@@ -1861,18 +1859,18 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 	private void invokeAwareMethods(String beanName, Object bean) {
 		if (bean instanceof Aware) {
-			// TODO Spring拓展点：BeanNameAware调用setBeanName
+			// Force-Spring 拓展点：BeanNameAware调用setBeanName
 			if (bean instanceof BeanNameAware) {
 				((BeanNameAware) bean).setBeanName(beanName);
 			}
-			// TODO Spring拓展点：BeanClassLoaderAware调用setBeanClassLoader
+			// Force-Spring 拓展点：BeanClassLoaderAware调用setBeanClassLoader
 			if (bean instanceof BeanClassLoaderAware) {
 				ClassLoader bcl = getBeanClassLoader();
 				if (bcl != null) {
 					((BeanClassLoaderAware) bean).setBeanClassLoader(bcl);
 				}
 			}
-			// TODO Spring拓展点：BeanFactoryAware调用setBeanFactory
+			// Force-Spring 拓展点：BeanFactoryAware调用setBeanFactory
 			if (bean instanceof BeanFactoryAware) {
 				((BeanFactoryAware) bean).setBeanFactory(AbstractAutowireCapableBeanFactory.this);
 			}
