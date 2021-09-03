@@ -30,7 +30,7 @@ package org.springframework.context.annotation;
 public interface ConfigurationCondition extends Condition {
 
 	/**
-	 * Return the {@link ConfigurationPhase} in which the condition should be evaluated.
+	 * 返回应评估条件的 {@link ConfigurationPhase}。
 	 */
 	ConfigurationPhase getConfigurationPhase();
 

@@ -16,18 +16,8 @@
 
 package org.springframework.context.annotation;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.springframework.aop.framework.autoproxy.AutoProxyUtils;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanClassLoaderAware;
@@ -67,6 +57,15 @@ import org.springframework.core.type.classreading.MetadataReaderFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * {@link BeanFactoryPostProcessor} used for bootstrapping processing of
@@ -150,7 +149,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 	@Override
 	public int getOrder() {
-		return Ordered.LOWEST_PRECEDENCE;  // within PriorityOrdered
+		// within PriorityOrdered
+		return Ordered.LOWEST_PRECEDENCE;
 	}
 
 	/**
@@ -398,8 +398,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		if (this.metadataReaderFactory instanceof CachingMetadataReaderFactory) {
-			// Clear cache in externally provided MetadataReaderFactory; this is a no-op
-			// for a shared cache since it'll be cleared by the ApplicationContext.
+			// 清除外部提供的 MetadataReaderFactory 中的缓存；这是一个无操作用于共享缓存，因为它将被 ApplicationContext 清除。
 			((CachingMetadataReaderFactory) this.metadataReaderFactory).clearCache();
 		}
 	}

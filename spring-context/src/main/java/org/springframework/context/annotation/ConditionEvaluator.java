@@ -16,10 +16,6 @@
 
 package org.springframework.context.annotation;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -37,6 +33,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.MultiValueMap;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Internal class used to evaluate {@link Conditional} annotations.
@@ -78,20 +78,24 @@ class ConditionEvaluator {
 	 * @return if the item should be skipped
 	 */
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
+		// 没有添加默认不需要跳过
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
 		}
 
+		// 没有配置时会自动推断
 		if (phase == null) {
+			// 判断是不是@Configuration标注的类
 			if (metadata instanceof AnnotationMetadata &&
 					ConfigurationClassUtils.isConfigurationCandidate((AnnotationMetadata) metadata)) {
 				return shouldSkip(metadata, ConfigurationPhase.PARSE_CONFIGURATION);
 			}
+			// 非@Configuration标注的类
 			return shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN);
 		}
 
 		List<Condition> conditions = new ArrayList<>();
-		// 获取到所有的@Conditional(包括@ConditionalOnBean之类的)
+		// 获取到所有包含@Conditional(包括@ConditionalOnBean之类的)的注解
 		for (String[] conditionClasses : getConditionClasses(metadata)) {
 			for (String conditionClass : conditionClasses) {
 				Condition condition = getCondition(conditionClass, this.context.getClassLoader());
@@ -107,7 +111,11 @@ class ConditionEvaluator {
 			if (condition instanceof ConfigurationCondition) {
 				requiredPhase = ((ConfigurationCondition) condition).getConfigurationPhase();
 			}
-			if ((requiredPhase == null || requiredPhase == phase) && !condition.matches(this.context, metadata)) {
+			// 过滤掉配置模式不是一样的@Conditional注解
+			boolean isSame = requiredPhase == null || requiredPhase == phase;
+			if (isSame
+					// 配置模式与参数一致，即执行
+					&& !condition.matches(this.context, metadata)) {
 				return true;
 			}
 		}

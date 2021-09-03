@@ -16,8 +16,6 @@
 
 package org.springframework.context.annotation;
 
-import java.lang.reflect.Constructor;
-
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.Aware;
@@ -33,8 +31,10 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 
+import java.lang.reflect.Constructor;
+
 /**
- * Common delegate code for the handling of parser strategies, e.g.
+ * 用于处理解析器策略的通用委托代码，例如
  * {@code TypeFilter}, {@code ImportSelector}, {@code ImportBeanDefinitionRegistrar}
  *
  * @author Juergen Hoeller

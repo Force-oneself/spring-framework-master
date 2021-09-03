@@ -33,22 +33,22 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  * {@link ConfigurationCondition} interface.
  *
  * @author Phillip Webb
- * @since 4.0
  * @see ConfigurationCondition
  * @see Conditional
  * @see ConditionContext
+ * @since 4.0
  */
 @FunctionalInterface
 public interface Condition {
 
-	/**
-	 * Determine if the condition matches.
-	 * @param context the condition context
-	 * @param metadata the metadata of the {@link org.springframework.core.type.AnnotationMetadata class}
-	 * or {@link org.springframework.core.type.MethodMetadata method} being checked
-	 * @return {@code true} if the condition matches and the component can be registered,
-	 * or {@code false} to veto the annotated component's registration
-	 */
-	boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
+    /**
+     * 确定条件是否匹配。false说明需要跳过
+     *
+     * @param context  条件上下文
+     * @param metadata {@link org.springframework.core.type.AnnotationMetadata 类}的元数据
+     *                 或 {@link org.springframework.core.type.MethodMetadata method} 被检查
+     * @return {@code true} 如果条件匹配并且可以注册该组件，或 {@code false} 否决带注释的组件的注册
+     */
+    boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
 
 }
