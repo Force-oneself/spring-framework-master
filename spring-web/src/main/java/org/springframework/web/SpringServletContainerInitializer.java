@@ -105,36 +105,31 @@ import org.springframework.util.ReflectionUtils;
  * @author Chris Beams
  * @author Juergen Hoeller
  * @author Rossen Stoyanchev
- * @since 3.1
  * @see #onStartup(Set, ServletContext)
  * @see WebApplicationInitializer
+ * @since 3.1
  */
 @HandlesTypes(WebApplicationInitializer.class)
 public class SpringServletContainerInitializer implements ServletContainerInitializer {
 
 	/**
-	 * Delegate the {@code ServletContext} to any {@link WebApplicationInitializer}
-	 * implementations present on the application classpath.
-	 * <p>Because this class declares @{@code HandlesTypes(WebApplicationInitializer.class)},
-	 * Servlet 3.0+ containers will automatically scan the classpath for implementations
-	 * of Spring's {@code WebApplicationInitializer} interface and provide the set of all
-	 * such types to the {@code webAppInitializerClasses} parameter of this method.
-	 * <p>If no {@code WebApplicationInitializer} implementations are found on the classpath,
-	 * this method is effectively a no-op. An INFO-level log message will be issued notifying
-	 * the user that the {@code ServletContainerInitializer} has indeed been invoked but that
-	 * no {@code WebApplicationInitializer} implementations were found.
-	 * <p>Assuming that one or more {@code WebApplicationInitializer} types are detected,
-	 * they will be instantiated (and <em>sorted</em> if the @{@link
-	 * org.springframework.core.annotation.Order @Order} annotation is present or
-	 * the {@link org.springframework.core.Ordered Ordered} interface has been
-	 * implemented). Then the {@link WebApplicationInitializer#onStartup(ServletContext)}
-	 * method will be invoked on each instance, delegating the {@code ServletContext} such
-	 * that each instance may register and configure servlets such as Spring's
-	 * {@code DispatcherServlet}, listeners such as Spring's {@code ContextLoaderListener},
-	 * or any other Servlet API componentry such as filters.
+	 * 将 {@code ServletContext} 委托给应用程序类路径上存在的任何 {@link WebApplicationInitializer} 实现。
+	 * <p>因为这个类声明了@{@code HandlesTypes(WebApplicationInitializer.class)}，
+	 * Servlet 3.0+ 容器会自动扫描类路径以寻找 Spring 的 {@code WebApplicationInitializer} 接口的实现，
+	 * 并将所有这些类型的集合提供给 {@此方法的代码 webAppInitializerClasses} 参数。
+	 * <p>如果在类路径上找不到 {@code WebApplicationInitializer} 实现，则此方法实际上是无操作的。
+	 * 将发出一条 INFO 级别的日志消息，通知用户 {@code ServletContainerInitializer} 确实已被调用，
+	 * 但未找到 {@code WebApplicationInitializer} 实现。
+	 * <p>假设检测到一个或多个 {@code WebApplicationInitializer} 类型，
+	 * 它们将被实例化（如果 @{@link org.springframework.core.annotation.Order @Order} 注释是<em>sorted<em>存在
+	 * 或 {@link org.springframework.core.Ordered Ordered} 接口已实现）。
+	 * 然后在每个实例上调用{@link WebApplicationInitializeronStartup(ServletContext)}方法，
+	 * 委托{@code ServletContext}使得每个实例可以注册和配置servlets如Spring的{@code DispatcherServlet}，
+	 * 监听器如Spring的{@code ContextLoaderListener} 或任何其他 Servlet API 组件，例如过滤器。
+	 *
 	 * @param webAppInitializerClasses all implementations of
-	 * {@link WebApplicationInitializer} found on the application classpath
-	 * @param servletContext the servlet context to be initialized
+	 *                                 {@link WebApplicationInitializer} found on the application classpath
+	 * @param servletContext           the servlet context to be initialized
 	 * @see WebApplicationInitializer#onStartup(ServletContext)
 	 * @see AnnotationAwareOrderComparator
 	 */
@@ -146,15 +141,13 @@ public class SpringServletContainerInitializer implements ServletContainerInitia
 
 		if (webAppInitializerClasses != null) {
 			for (Class<?> waiClass : webAppInitializerClasses) {
-				// Be defensive: Some servlet containers provide us with invalid classes,
-				// no matter what @HandlesTypes says...
+				// 防御性：一些 servlet 容器为我们提供了无效的类，无论 @HandlesTypes 说什么......
 				if (!waiClass.isInterface() && !Modifier.isAbstract(waiClass.getModifiers()) &&
 						WebApplicationInitializer.class.isAssignableFrom(waiClass)) {
 					try {
 						initializers.add((WebApplicationInitializer)
 								ReflectionUtils.accessibleConstructor(waiClass).newInstance());
-					}
-					catch (Throwable ex) {
+					} catch (Throwable ex) {
 						throw new ServletException("Failed to instantiate WebApplicationInitializer class", ex);
 					}
 				}
