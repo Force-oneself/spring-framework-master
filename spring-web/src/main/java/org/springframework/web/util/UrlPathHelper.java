@@ -227,11 +227,11 @@ public class UrlPathHelper {
 	 * @see #getPathWithinApplication
 	 */
 	public String getLookupPathForRequest(HttpServletRequest request) {
-		// Always use full path within current servlet context?
+		// 始终在当前 servlet 上下文中使用完整路径？
 		if (this.alwaysUseFullPath || skipServletPathDetermination(request)) {
 			return getPathWithinApplication(request);
 		}
-		// Else, use path within current servlet mapping if applicable
+		// 否则，如果适用，请使用当前 servlet 映射中的路径
 		String rest = getPathWithinServletMapping(request);
 		if (!"".equals(rest)) {
 			return rest;
@@ -271,7 +271,7 @@ public class UrlPathHelper {
 		String sanitizedPathWithinApp = getSanitizedPath(pathWithinApp);
 		String path;
 
-		// If the app container sanitized the servletPath, check against the sanitized version
+		// 如果应用程序容器清理了 servletPath，请检查清理后的版本
 		if (servletPath.contains(sanitizedPathWithinApp)) {
 			path = getRemainingPath(sanitizedPathWithinApp, servletPath, false);
 		}
@@ -280,28 +280,27 @@ public class UrlPathHelper {
 		}
 
 		if (path != null) {
-			// Normal case: URI contains servlet path.
+			// 正常情况：URI 包含 servlet 路径。
 			return path;
 		}
 		else {
-			// Special case: URI is different from servlet path.
+			// 特殊情况：URI 与 servlet 路径不同。
 			String pathInfo = request.getPathInfo();
 			if (pathInfo != null) {
-				// Use path info if available. Indicates index page within a servlet mapping?
-				// e.g. with index page: URI="/", servletPath="/index.html"
+				// 如果可用，请使用路径信息。表示 servlet 映射中的索引页？
+				// 例如带索引页：URI="", servletPath="index.html"
 				return pathInfo;
 			}
 			if (!this.urlDecode) {
-				// No path info... (not mapped by prefix, nor by extension, nor "/*")
-				// For the default servlet mapping (i.e. "/"), urlDecode=false can
-				// cause issues since getServletPath() returns a decoded path.
-				// If decoding pathWithinApp yields a match just use pathWithinApp.
+				// 没有路径信息...（不是按前缀映射，也不是按扩展名映射，也不是“”）对于默认的 servlet 映射（即“”），
+				// urlDecode=false 可能会导致问题，因为 getServletPath() 返回一个解码的路径。
+				// 如果解码 pathWithinApp 产生匹配，只需使用 pathWithinApp。
 				path = getRemainingPath(decodeInternal(request, pathWithinApp), servletPath, false);
 				if (path != null) {
 					return pathWithinApp;
 				}
 			}
-			// Otherwise, use the full servlet path.
+			// 否则，使用完整的 servlet 路径。
 			return servletPath;
 		}
 	}
@@ -316,9 +315,10 @@ public class UrlPathHelper {
 	public String getPathWithinApplication(HttpServletRequest request) {
 		String contextPath = getContextPath(request);
 		String requestUri = getRequestUri(request);
+		// 实际Controller里的请求路径
 		String path = getRemainingPath(requestUri, contextPath, true);
 		if (path != null) {
-			// Normal case: URI contains context path.
+			// 正常情况：URI 包含上下文路径。
 			return (StringUtils.hasText(path) ? path : "/");
 		}
 		else {
@@ -436,9 +436,8 @@ public class UrlPathHelper {
 			servletPath = request.getServletPath();
 		}
 		if (servletPath.length() > 1 && servletPath.endsWith("/") && shouldRemoveTrailingServletPathSlash(request)) {
-			// On WebSphere, in non-compliant mode, for a "/foo/" case that would be "/foo"
-			// on all other servlet containers: removing trailing slash, proceeding with
-			// that remaining slash as final lookup path...
+			// 在 WebSphere 上，在非兼容模式下，
+			// 对于在所有其他 servlet 容器上将是“foo”的“foo”情况：删除尾部斜杠，继续将剩余的斜杠作为最终查找路径......
 			servletPath = servletPath.substring(0, servletPath.length() - 1);
 		}
 		return servletPath;

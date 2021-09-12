@@ -968,7 +968,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * 公开特定于 DispatcherServlet 的请求属性并委托给 {@link #doDispatch} 以进行实际调度。
 	 */
 	@Override
-	protected void doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	protected void  doService(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		logRequest(request);
 
 		// 在包含的情况下保留请求属性的快照，以便能够在包含之后恢复原始属性.
@@ -991,6 +991,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		request.setAttribute(THEME_RESOLVER_ATTRIBUTE, this.themeResolver);
 		request.setAttribute(THEME_SOURCE_ATTRIBUTE, getThemeSource());
 
+		// 重定向之后所需要保存的信息记录, 参数传递
 		if (this.flashMapManager != null) {
 			FlashMap inputFlashMap = this.flashMapManager.retrieveAndUpdate(request, response);
 			if (inputFlashMap != null) {
@@ -1066,19 +1067,23 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * @throws Exception in case of any kind of processing failure
 	 */
 	protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		// 在上传文件的时需要修改request
 		HttpServletRequest processedRequest = request;
 		HandlerExecutionChain mappedHandler = null;
+		// 上传请求标识
 		boolean multipartRequestParsed = false;
 
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 
 		try {
 			ModelAndView mv = null;
+			// 分发时发生的异常记录
 			Exception dispatchException = null;
 
 			try {
-				// 检查是否是上传文件并且将请求转换成支持文件上传的HttpServletRequest
+				// 检查是否是上传文件并且将请求转换成支持文件上传的MultipartHttpServletRequest
 				processedRequest = checkMultipart(request);
+				// 与原请求对比是否有更改
 				multipartRequestParsed = (processedRequest != request);
 
 				// 确定当前请求的处理程序.
@@ -1181,7 +1186,7 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
-		// Did the handler return a view to render?
+		// 处理程序是否返回要渲染的视图？
 		if (mv != null && !mv.wasCleared()) {
 			render(mv, request, response);
 			if (errorView) {
@@ -1194,12 +1199,12 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		if (WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) {
-			// Concurrent handling started during a forward
+			// 在转发期间开始并发处理
 			return;
 		}
 
 		if (mappedHandler != null) {
-			// Exception (if any) is already handled..
+			// 异常（如果有的话）已经被处理了..
 			mappedHandler.triggerAfterCompletion(request, response, null);
 		}
 	}
@@ -1240,6 +1245,7 @@ public class DispatcherServlet extends FrameworkServlet {
 						"skipping re-resolution for undisturbed error rendering");
 			} else {
 				try {
+					// 将HttpServletRequest解析成MultipartHttpServletRequest，并解析请求的参数以及文件
 					return this.multipartResolver.resolveMultipart(request);
 				} catch (MultipartException ex) {
 					if (request.getAttribute(WebUtils.ERROR_EXCEPTION_ATTRIBUTE) != null) {
@@ -1286,8 +1292,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Return the HandlerExecutionChain for this request.
-	 * <p>Tries all handler mappings in order.
+	 * 返回此请求的 HandlerExecutionChain。 <p>按顺序尝试所有处理程序映射。
 	 *
 	 * @param request current HTTP request
 	 * @return the HandlerExecutionChain, or {@code null} if no handler could be found
@@ -1296,7 +1301,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
 		if (this.handlerMappings != null) {
 			for (HandlerMapping mapping : this.handlerMappings) {
-				// RequestMappingHandlerMapping--AbstractHandlerMapping
+				// AbstractHandlerMapping通用实现
 				HandlerExecutionChain handler = mapping.getHandler(request);
 				if (handler != null) {
 					return handler;
@@ -1326,7 +1331,7 @@ public class DispatcherServlet extends FrameworkServlet {
 	}
 
 	/**
-	 * Return the HandlerAdapter for this handler object.
+	 * 返回此处理程序对象的 HandlerAdapter。
 	 *
 	 * @param handler the handler object to find an adapter for
 	 * @throws ServletException if no HandlerAdapter can be found for the handler. This is a fatal error.

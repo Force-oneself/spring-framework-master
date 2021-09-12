@@ -486,7 +486,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 
 
 	/**
-	 * Return "true" if this {@code HandlerMapping} has been
+	 * 如果此 {@code HandlerMapping} 已被设置，则返回“true”
 	 * {@link #setPatternParser enabled} to use parsed {@code PathPattern}s.
 	 */
 	@Override
@@ -505,6 +505,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	@Override
 	@Nullable
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+		// 这里由子类提供处理器，结果可能是HandlerMethod或者HandlerExecutionChain
 		Object handler = getHandlerInternal(request);
 		if (handler == null) {
 			handler = getDefaultHandler();
@@ -544,17 +545,13 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	}
 
 	/**
-	 * Look up a handler for the given request, returning {@code null} if no
-	 * specific one is found. This method is called by {@link #getHandler};
-	 * a {@code null} return value will lead to the default handler, if one is set.
-	 * <p>On CORS pre-flight requests this method should return a match not for
-	 * the pre-flight request but for the expected actual request based on the URL
-	 * path, the HTTP methods from the "Access-Control-Request-Method" header, and
-	 * the headers from the "Access-Control-Request-Headers" header thus allowing
-	 * the CORS configuration to be obtained via {@link #getCorsConfiguration(Object, HttpServletRequest)},
-	 * <p>Note: This method may also return a pre-built {@link HandlerExecutionChain},
-	 * combining a handler object with dynamically determined interceptors.
-	 * Statically specified interceptors will get merged into such an existing chain.
+	 * 查找给定请求的处理程序，如果未找到特定请求，则返回 {@code null}。
+	 * 该方法由 {@link getHandler} 调用；如果设置了一个 {@code null} 返回值将导致默认处理程序。
+	 * <p>在 CORS 预检请求中，此方法应该返回一个匹配，而不是预检请求，而是基于 URL 路径的预期实际请求，
+	 * 来自“Access-Control-Request-Method”标头的 HTTP 方法，以及来自“Access-Control-Request-Headers”标头的标头，
+	 * 从而允许通过 {@link getCorsConfiguration(Object, HttpServletRequest)} 获取 CORS 配置，
+	 * <p>注意：此方法也可能返回一个预先构建的 { @link HandlerExecutionChain}，
+	 * 将处理程序对象与动态确定的拦截器相结合。静态指定的拦截器将合并到这样一个现有的链中。
 	 *
 	 * @param request current HTTP request
 	 * @return the corresponding handler instance, or {@code null} if none found
@@ -564,15 +561,12 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	protected abstract Object getHandlerInternal(HttpServletRequest request) throws Exception;
 
 	/**
-	 * Initialize the path to use for request mapping.
-	 * <p>When parsed patterns are {@link #usesPathPatterns() enabled} a parsed
-	 * {@code RequestPath} is expected to have been
-	 * {@link ServletRequestPathUtils#parseAndCache(HttpServletRequest) parsed}
-	 * externally by the {@link org.springframework.web.servlet.DispatcherServlet}
-	 * or {@link org.springframework.web.filter.ServletRequestPathFilter}.
-	 * <p>Otherwise for String pattern matching via {@code PathMatcher} the
-	 * path is {@link UrlPathHelper#resolveAndCacheLookupPath resolved} by this
-	 * method.
+	 * 初始化用于请求映射的路径。 <p>当解析的模式 {@link usesPathPatterns() enabled} 解析的
+	 * {@code RequestPath} 预计已被 {@link org.springframework.web.servlet 外部
+	 * {@link ServletRequestPathUtilsparseAndCache(HttpServletRequest) 解析}。
+	 * DispatcherServlet} 或 {@link org.springframework.web.filter.ServletRequestPathFilter}。
+	 * <p>否则，对于通过 {@code PathMatcher} 进行的字符串模式匹配，
+	 * 此方法的路径是 {@link UrlPathHelperresolveAndCacheLookupPath 解析}。
 	 *
 	 * @since 5.3
 	 */
@@ -606,7 +600,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @see #getAdaptedInterceptors()
 	 */
 	protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
-		// 初始化一个处理执行链
+		// 初始化一个处理执行链，如果handler已经是HandlerExecutionChain就直接返回
 		HandlerExecutionChain chain = (handler instanceof HandlerExecutionChain
 				? (HandlerExecutionChain) handler
 				: new HandlerExecutionChain(handler));

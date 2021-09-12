@@ -1039,22 +1039,30 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 	 */
 	protected final void processRequest(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		// 记录时间
 		long startTime = System.currentTimeMillis();
+		// 记录异常
 		Throwable failureCause = null;
 
+		// 获取LocaleContextHolder中保存的LocaleContext（保存本地化信息）
 		LocaleContext previousLocaleContext = LocaleContextHolder.getLocaleContext();
+		// 获取当前请求中的LocaleContext
 		LocaleContext localeContext = buildLocaleContext(request);
 
+		// 获取RequestContextHolder中缓存的RequestAttributes（用于管理session和request）
 		RequestAttributes previousAttributes = RequestContextHolder.getRequestAttributes();
+		// 当前请求的ServletRequestAttributes
 		ServletRequestAttributes requestAttributes = buildRequestAttributes(request, response, previousAttributes);
 
+		// 异步管理器，没猜错应该是支持Servlet3.0的异步处理
 		WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
 		asyncManager.registerCallableInterceptor(FrameworkServlet.class.getName(), new RequestBindingInterceptor());
 
+		// 记录一下当前请求到Holder中去
 		initContextHolders(request, localeContext, requestAttributes);
 
 		try {
+			// 处理逻辑的核心方法
 			doService(request, response);
 		} catch (ServletException | IOException ex) {
 			failureCause = ex;
@@ -1063,11 +1071,13 @@ public abstract class FrameworkServlet extends HttpServletBean implements Applic
 			failureCause = ex;
 			throw new NestedServletException("Request processing failed", ex);
 		} finally {
+			// 将之前记录的在Holder中抹去还原
 			resetContextHolders(request, previousLocaleContext, previousAttributes);
 			if (requestAttributes != null) {
 				requestAttributes.requestCompleted();
 			}
 			logResult(request, response, failureCause, asyncManager);
+			// 发布一个ServletRequestHandledEvent事件
 			publishRequestHandledEvent(request, response, startTime, failureCause);
 		}
 	}

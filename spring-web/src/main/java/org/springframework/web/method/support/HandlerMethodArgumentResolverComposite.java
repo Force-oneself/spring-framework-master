@@ -54,6 +54,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 
 	/**
 	 * Add the given {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers}.
+	 *
 	 * @since 4.3
 	 */
 	public HandlerMethodArgumentResolverComposite addResolvers(
@@ -86,6 +87,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 
 	/**
 	 * Clear the list of configured resolvers.
+	 *
 	 * @since 4.3
 	 */
 	public void clear() {
@@ -94,8 +96,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 
 
 	/**
-	 * Whether the given {@linkplain MethodParameter method parameter} is
-	 * supported by any registered {@link HandlerMethodArgumentResolver}.
+	 * 任何已注册的 {@link HandlerMethodArgumentResolver} 是否支持给定的 {@linkplain MethodParameter 方法参数}。
 	 */
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
@@ -103,16 +104,15 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	}
 
 	/**
-	 * Iterate over registered
-	 * {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers}
-	 * and invoke the one that supports it.
+	 * 迭代注册的 {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} 并调用支持它的那个。
+	 *
 	 * @throws IllegalArgumentException if no suitable argument resolver is found
 	 */
 	@Override
 	@Nullable
 	public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
-			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
-
+								  NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
+		// RequestParamMethodArgumentResolver->AbstractNamedValueMethodArgumentResolver
 		HandlerMethodArgumentResolver resolver = getArgumentResolver(parameter);
 		if (resolver == null) {
 			throw new IllegalArgumentException("Unsupported parameter type [" +
@@ -122,8 +122,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	}
 
 	/**
-	 * Find a registered {@link HandlerMethodArgumentResolver} that supports
-	 * the given method parameter.
+	 * 查找支持给定方法参数的已注册 {@link HandlerMethodArgumentResolver}.
 	 */
 	@Nullable
 	private HandlerMethodArgumentResolver getArgumentResolver(MethodParameter parameter) {

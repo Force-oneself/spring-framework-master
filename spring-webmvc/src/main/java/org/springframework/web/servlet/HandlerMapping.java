@@ -59,6 +59,7 @@ public interface HandlerMapping {
 	/**
 	 * Name of the {@link HttpServletRequest} attribute that contains the mapped
 	 * handler for the best matching pattern.
+	 *
 	 * @since 4.3.21
 	 */
 	String BEST_MATCHING_HANDLER_ATTRIBUTE = HandlerMapping.class.getName() + ".bestMatchingHandler";
@@ -68,6 +69,7 @@ public interface HandlerMapping {
 	 * used to look up the matching handler, which depending on the configured
 	 * {@link org.springframework.web.util.UrlPathHelper} could be the full path
 	 * or without the context path, decoded or not, etc.
+	 *
 	 * @since 5.2
 	 * @deprecated as of 5.3 in favor of
 	 * {@link org.springframework.web.util.UrlPathHelper#PATH_ATTRIBUTE} and
@@ -138,14 +140,12 @@ public interface HandlerMapping {
 
 
 	/**
-	 * Whether this {@code HandlerMapping} instance has been enabled to use parsed
-	 * {@link org.springframework.web.util.pattern.PathPattern}s in which case
-	 * the {@link DispatcherServlet} automatically
-	 * {@link org.springframework.web.util.ServletRequestPathUtils#parseAndCache parses}
-	 * the {@code RequestPath} to make it available for
-	 * {@link org.springframework.web.util.ServletRequestPathUtils#getParsedRequestPath
-	 * access} in {@code HandlerMapping}s, {@code HandlerInterceptor}s, and
-	 * other components.
+	 * 此{@code HandlerMapping} 实例是否已启用使用已解析
+	 * {@link org.springframework.web.util.pattern.PathPattern}s 在这种情况下
+	 * {@link DispatcherServlet} 自动 {@link org.springframework.web.util.ServletRequestPathUtilsparseAndCache 解析}
+	 * {@code RequestPath} 以使其可用对于 {@code HandlerMapping}s、{@code HandlerInterceptor}s 和其他组件中的
+	 * {@link org.springframework.web.util.ServletRequestPathUtilsgetParsedRequestPath 访问}。
+	 *
 	 * @since 5.3
 	 */
 	default boolean usesPathPatterns() {
@@ -153,15 +153,12 @@ public interface HandlerMapping {
 	}
 
 	/**
-	 * Return a handler and any interceptors for this request. The choice may be made
-	 * on request URL, session state, or any factor the implementing class chooses.
-	 * <p>The returned HandlerExecutionChain contains a handler Object, rather than
-	 * even a tag interface, so that handlers are not constrained in any way.
-	 * For example, a HandlerAdapter could be written to allow another framework's
-	 * handler objects to be used.
-	 * <p>Returns {@code null} if no match was found. This is not an error.
-	 * The DispatcherServlet will query all registered HandlerMapping beans to find
-	 * a match, and only decide there is an error if none can find a handler.
+	 * 返回此请求的处理程序和任何拦截器。可以根据请求 URL、会话状态或实现类选择的任何因素进行选择。
+	 * <p>返回的HandlerExecutionChain包含一个处理程序对象，而不是标签接口，因此处理程序不受任何方式的约束。
+	 * 例如，可以编写 HandlerAdapter 以允许使用另一个框架的处理程序对象。
+	 * <p>如果未找到匹配项，则返回 {@code null}。这不是错误。
+	 * DispatcherServlet 将查询所有已注册的 HandlerMapping beans 以找到匹配项，只有在没有找到处理程序时才确定有错误。
+	 *
 	 * @param request current HTTP request
 	 * @return a HandlerExecutionChain instance containing handler object and
 	 * any interceptors, or {@code null} if no mapping found

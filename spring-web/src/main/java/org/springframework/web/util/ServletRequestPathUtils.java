@@ -38,7 +38,9 @@ import org.springframework.util.Assert;
  */
 public abstract class ServletRequestPathUtils {
 
-	/** Name of Servlet request attribute that holds the parsed {@link RequestPath}. */
+	/**
+	 * Name of Servlet request attribute that holds the parsed {@link RequestPath}.
+	 */
 	public static final String PATH_ATTRIBUTE = ServletRequestPathUtils.class.getName() + ".path";
 
 
@@ -62,7 +64,8 @@ public abstract class ServletRequestPathUtils {
 	}
 
 	/**
-	 * Return a {@link #parseAndCache  previously} parsed and cached {@code RequestPath}.
+	 * 返回一个 {@link parseAndCache previous} 解析和缓存的 {@code RequestPath}。
+	 *
 	 * @throws IllegalArgumentException if not found
 	 */
 	public static RequestPath getParsedRequestPath(ServletRequest request) {
@@ -100,6 +103,7 @@ public abstract class ServletRequestPathUtils {
 	 * ServletRequestPathFilter}. In other cases where {@code HandlerMapping}s
 	 * use String pattern matching with {@code PathMatcher}, the String
 	 * lookupPath is resolved separately by each {@code HandlerMapping}.
+	 *
 	 * @param request the current request
 	 * @return a String lookupPath or a {@code RequestPath}
 	 * @throws IllegalArgumentException if neither is available
@@ -131,6 +135,7 @@ public abstract class ServletRequestPathUtils {
 	 * <p>If the cached path is a {@link UrlPathHelper#resolveAndCacheLookupPath
 	 * pre-resolved} String lookupPath, then the returned String path value
 	 * depends on how {@link UrlPathHelper} that resolved is configured.
+	 *
 	 * @param request the current request
 	 * @return the full request mapping path as a String
 	 */
@@ -147,6 +152,7 @@ public abstract class ServletRequestPathUtils {
 	 * Check for a previously {@link UrlPathHelper#resolveAndCacheLookupPath
 	 * resolved} String lookupPath or a previously {@link #parseAndCache parsed}
 	 * {@code RequestPath}.
+	 *
 	 * @param request the current request
 	 * @return whether a pre-resolved or pre-parsed path is available
 	 */

@@ -68,12 +68,13 @@ public class HandlerMethodReturnValueHandlerComposite implements HandlerMethodRe
 	}
 
 	/**
-	 * Iterate over registered {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} and invoke the one that supports it.
+	 * 迭代注册的 {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} 并调用支持它的那个。
+	 *
 	 * @throws IllegalStateException if no suitable {@link HandlerMethodReturnValueHandler} is found.
 	 */
 	@Override
 	public void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
-			ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
+								  ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
 
 		HandlerMethodReturnValueHandler handler = selectHandler(returnValue, returnType);
 		if (handler == null) {

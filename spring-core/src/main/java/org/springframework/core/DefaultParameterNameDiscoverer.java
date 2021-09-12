@@ -17,31 +17,27 @@
 package org.springframework.core;
 
 /**
- * Default implementation of the {@link ParameterNameDiscoverer} strategy interface,
- * using the Java 8 standard reflection mechanism (if available), and falling back
- * to the ASM-based {@link LocalVariableTableParameterNameDiscoverer} for checking
- * debug information in the class file.
- *
- * <p>If a Kotlin reflection implementation is present,
- * {@link KotlinReflectionParameterNameDiscoverer} is added first in the list and
- * used for Kotlin classes and interfaces. When compiling or running as a GraalVM
- * native image, the {@code KotlinReflectionParameterNameDiscoverer} is not used.
- *
- * <p>Further discoverers may be added through {@link #addDiscoverer(ParameterNameDiscoverer)}.
+ * {@link ParameterNameDiscoverer} 策略接口的默认实现，使用 Java 8 标准反射机制（如果可用），
+ * 并回退到基于 ASM 的 {@link LocalVariableTableParameterNameDiscoverer} 用于检查类文件中的调试信息。
+ * <p>如果存在 Kotlin 反射实现，{@link KotlinReflectionParameterNameDiscoverer}
+ * 将首先添加到列表中并用于 Kotlin 类和接口。作为 GraalVM 本机映像编译或运行时，
+ * 不使用 {@code KotlinReflectionParameterNameDiscoverer}。
+ * <p>可以通过 {@link addDiscoverer(ParameterNameDiscoverer)} 添加更多发现者。
  *
  * @author Juergen Hoeller
  * @author Sebastien Deleuze
  * @author Sam Brannen
- * @since 4.0
  * @see StandardReflectionParameterNameDiscoverer
  * @see LocalVariableTableParameterNameDiscoverer
  * @see KotlinReflectionParameterNameDiscoverer
+ * @since 4.0
  */
 public class DefaultParameterNameDiscoverer extends PrioritizedParameterNameDiscoverer {
 
 	/**
 	 * Whether this environment lives within a native image.
 	 * Exposed as a private static field rather than in a {@code NativeImageDetector.inNativeImage()} static method due to https://github.com/oracle/graal/issues/2594.
+	 *
 	 * @see <a href="https://github.com/oracle/graal/blob/master/sdk/src/org.graalvm.nativeimage/src/org/graalvm/nativeimage/ImageInfo.java">ImageInfo.java</a>
 	 */
 	private static final boolean IN_NATIVE_IMAGE = (System.getProperty("org.graalvm.nativeimage.imagecode") != null);
