@@ -45,6 +45,7 @@ public class ErrorsMethodArgumentResolver implements HandlerMethodArgumentResolv
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		Class<?> paramType = parameter.getParameterType();
+		// 参数类型是Errors
 		return Errors.class.isAssignableFrom(paramType);
 	}
 

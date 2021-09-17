@@ -38,9 +38,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 /**
- * Abstract base class for resolving method arguments from a named value.
- * Request parameters, request headers, and path variables are examples of named
- * values. Each may have a name, a required flag, and a default value.
+ * 用于从命名值解析方法参数的抽象基类。请求参数、请求标头和路径变量是命名值的示例。每个都可能有一个名称、一个必需的标志和一个默认值。
  *
  * <p>Subclasses define how to do the following:
  * <ul>
@@ -107,15 +105,20 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 					"Specified name must not resolve to null: [" + namedValueInfo.name + "]");
 		}
 
+		// 交由子类解析名称
 		Object arg = resolveName(resolvedName.toString(), nestedParameter, webRequest);
 		if (arg == null) {
 			if (namedValueInfo.defaultValue != null) {
+				// 设置默认值
 				arg = resolveStringValue(namedValueInfo.defaultValue);
 			} else if (namedValueInfo.required && !nestedParameter.isOptional()) {
+				// 处理没有值的情况，父类抛出异常，子类实现
 				handleMissingValue(namedValueInfo.name, nestedParameter, webRequest);
 			}
+			// null值处理
 			arg = handleNullValue(namedValueInfo.name, arg, nestedParameter.getNestedParameterType());
 		} else if ("".equals(arg) && namedValueInfo.defaultValue != null) {
+			// 默认值设置
 			arg = resolveStringValue(namedValueInfo.defaultValue);
 		}
 
@@ -131,7 +134,7 @@ public abstract class AbstractNamedValueMethodArgumentResolver implements Handle
 						namedValueInfo.name, parameter, ex.getCause());
 			}
 		}
-
+		// 子类拓展实现
 		handleResolvedValue(arg, namedValueInfo.name, parameter, mavContainer, webRequest);
 
 		return arg;

@@ -51,6 +51,7 @@ public abstract class ReflectionUtils {
 	 * @since 3.0.5
 	 */
 	public static final MethodFilter USER_DECLARED_METHODS =
+			// 非桥接并且非合成的方法
 			(method -> !method.isBridge() && !method.isSynthetic());
 
 	/**
@@ -354,23 +355,29 @@ public abstract class ReflectionUtils {
 	 * @throws IllegalStateException if introspection fails
 	 */
 	public static void doWithMethods(Class<?> clazz, MethodCallback mc, @Nullable MethodFilter mf) {
-		// Keep backing up the inheritance hierarchy.
+		// 继续备份继承层次结构。
+		// 获取所有的方法
 		Method[] methods = getDeclaredMethods(clazz, false);
 		for (Method method : methods) {
+			// 不满足MethodFilter，如在处理@InitBinder时，检查有没有标注该注解
 			if (mf != null && !mf.matches(method)) {
 				continue;
 			}
 			try {
+				// 满足条件
 				mc.doWith(method);
 			}
 			catch (IllegalAccessException ex) {
 				throw new IllegalStateException("Not allowed to access method '" + method.getName() + "': " + ex);
 			}
 		}
+		// 存在父类，mf不是过滤非桥接且非合成的或者父类不是Object
 		if (clazz.getSuperclass() != null && (mf != USER_DECLARED_METHODS || clazz.getSuperclass() != Object.class)) {
+			// 递归调用父类方法
 			doWithMethods(clazz.getSuperclass(), mc, mf);
 		}
 		else if (clazz.isInterface()) {
+			// 循环递归调用接口方法
 			for (Class<?> superIfc : clazz.getInterfaces()) {
 				doWithMethods(superIfc, mc, mf);
 			}

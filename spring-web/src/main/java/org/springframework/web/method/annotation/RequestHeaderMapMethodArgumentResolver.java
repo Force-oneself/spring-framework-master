@@ -48,6 +48,7 @@ public class RequestHeaderMapMethodArgumentResolver implements HandlerMethodArgu
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
+		// @RequestHeader标注并且还是Map的父类或者本身
 		return (parameter.hasParameterAnnotation(RequestHeader.class) &&
 				Map.class.isAssignableFrom(parameter.getParameterType()));
 	}
@@ -57,16 +58,22 @@ public class RequestHeaderMapMethodArgumentResolver implements HandlerMethodArgu
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
 
 		Class<?> paramType = parameter.getParameterType();
+		// MultiValueMap的处理
 		if (MultiValueMap.class.isAssignableFrom(paramType)) {
 			MultiValueMap<String, String> result;
+			// HttpHeaders是MultiValueMap的子类
 			if (HttpHeaders.class.isAssignableFrom(paramType)) {
+				// 用子类实现
 				result = new HttpHeaders();
 			}
 			else {
+				// 默认实现子类
 				result = new LinkedMultiValueMap<>();
 			}
 			for (Iterator<String> iterator = webRequest.getHeaderNames(); iterator.hasNext();) {
+				// Header的名称
 				String headerName = iterator.next();
+				// Header的值
 				String[] headerValues = webRequest.getHeaderValues(headerName);
 				if (headerValues != null) {
 					for (String headerValue : headerValues) {
@@ -77,6 +84,7 @@ public class RequestHeaderMapMethodArgumentResolver implements HandlerMethodArgu
 			return result;
 		}
 		else {
+			// 正常的放入Map中, 注意：使用的时候需要使用String及父类接收
 			Map<String, String> result = new LinkedHashMap<>();
 			for (Iterator<String> iterator = webRequest.getHeaderNames(); iterator.hasNext();) {
 				String headerName = iterator.next();

@@ -152,8 +152,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 	}
 
 	/**
-	 * Create the method argument value of the expected parameter type by reading
-	 * from the given HttpInputMessage.
+	 * 通过从给定的 HttpInputMessage 中读取来创建预期参数类型的方法参数值。
 	 *
 	 * @param <T>          the expected type of the argument value to be created
 	 * @param inputMessage the HTTP input message representing the current request
@@ -172,12 +171,14 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 		MediaType contentType;
 		boolean noContentType = false;
 		try {
+			// 获取Headers中ContentType
 			contentType = inputMessage.getHeaders().getContentType();
 		} catch (InvalidMediaTypeException ex) {
 			throw new HttpMediaTypeNotSupportedException(ex.getMessage());
 		}
 		if (contentType == null) {
 			noContentType = true;
+			// application/octet-stream一种二进制提交，而且可以与前端实现动态读取
 			contentType = MediaType.APPLICATION_OCTET_STREAM;
 		}
 
@@ -197,17 +198,26 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
 				Class<HttpMessageConverter<?>> converterType = (Class<HttpMessageConverter<?>>) converter.getClass();
-				GenericHttpMessageConverter<?> genericConverter =
-						(converter instanceof GenericHttpMessageConverter ? (GenericHttpMessageConverter<?>) converter : null);
-				if (genericConverter != null ? genericConverter.canRead(targetType, contextClass, contentType) :
-						(targetClass != null && converter.canRead(targetClass, contentType))) {
+				// GenericHttpMessageConverter可以将泛型与HTTP请求相互转换
+				GenericHttpMessageConverter<?> genericConverter = (converter instanceof GenericHttpMessageConverter
+						? (GenericHttpMessageConverter<?>) converter
+						: null);
+				if (genericConverter != null
+						// 能否读取
+						? genericConverter.canRead(targetType, contextClass, contentType)
+						: (targetClass != null && converter.canRead(targetClass, contentType))) {
 					if (message.hasBody()) {
+						// Body读取之前的执行操作
 						HttpInputMessage msgToUse =
 								getAdvice().beforeBodyRead(message, parameter, targetType, converterType);
-						body = (genericConverter != null ? genericConverter.read(targetType, contextClass, msgToUse) :
-								((HttpMessageConverter<T>) converter).read(targetClass, msgToUse));
+						// Body读取
+						body = (genericConverter != null
+								? genericConverter.read(targetType, contextClass, msgToUse)
+								: ((HttpMessageConverter<T>) converter).read(targetClass, msgToUse));
+						// Body读取之后的执行操作
 						body = getAdvice().afterBodyRead(body, msgToUse, parameter, targetType, converterType);
 					} else {
+						// Body无值的执行操作
 						body = getAdvice().handleEmptyBody(null, message, parameter, targetType, converterType);
 					}
 					break;
@@ -248,10 +258,10 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 	}
 
 	/**
-	 * Validate the binding target if applicable.
-	 * <p>The default implementation checks for {@code @javax.validation.Valid},
-	 * Spring's {@link org.springframework.validation.annotation.Validated},
-	 * and custom annotations whose name starts with "Valid".
+	 * 如果适用，验证绑定目标。
+	 * <p>默认实现检查 {@code @javax.validation.Valid}、Spring 的
+	 * {@link org.springframework.validation.annotation.Validated}
+	 * 和名称以“Valid”开头的自定义注解。
 	 *
 	 * @param binder    the DataBinder to be used
 	 * @param parameter the method parameter descriptor
@@ -261,7 +271,9 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 	protected void validateIfApplicable(WebDataBinder binder, MethodParameter parameter) {
 		Annotation[] annotations = parameter.getParameterAnnotations();
 		for (Annotation ann : annotations) {
+			// 获取@Validated
 			Validated validatedAnn = AnnotationUtils.getAnnotation(ann, Validated.class);
+			// 存在@Validated注解或者注解名是以Vaild开头的
 			if (validatedAnn != null || ann.annotationType().getSimpleName().startsWith("Valid")) {
 				Object hints = (validatedAnn != null ? validatedAnn.value() : AnnotationUtils.getValue(ann));
 				Object[] validationHints = (hints instanceof Object[] ? (Object[]) hints : new Object[]{hints});
@@ -287,7 +299,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 	}
 
 	/**
-	 * Adapt the given argument against the method parameter, if necessary.
+	 * 如有必要，根据方法参数调整给定参数。
 	 *
 	 * @param arg       the resolved argument
 	 * @param parameter the method parameter descriptor
@@ -296,6 +308,7 @@ public abstract class AbstractMessageConverterMethodArgumentResolver implements 
 	 */
 	@Nullable
 	protected Object adaptArgumentIfNecessary(@Nullable Object arg, MethodParameter parameter) {
+		// Optional类型处理
 		if (parameter.getParameterType() == Optional.class) {
 			if (arg == null || (arg instanceof Collection && ((Collection<?>) arg).isEmpty()) ||
 					(arg instanceof Object[] && ((Object[]) arg).length == 0)) {

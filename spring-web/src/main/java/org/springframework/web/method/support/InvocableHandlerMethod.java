@@ -138,6 +138,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 		if (logger.isTraceEnabled()) {
 			logger.trace("Arguments: " + Arrays.toString(args));
 		}
+		// 真正调用方法
 		return doInvoke(args);
 	}
 
@@ -163,7 +164,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 			if (args[i] != null) {
 				continue;
 			}
-			// 参数解析校验
+			// 26个参数解析器校验
 			if (!this.resolvers.supportsParameter(parameter)) {
 				throw new IllegalStateException(formatArgumentError(parameter, "No suitable resolver"));
 			}
@@ -171,7 +172,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 				// 解析参数
 				args[i] = this.resolvers.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory);
 			} catch (Exception ex) {
-				// Leave stack trace for later, exception may actually be resolved and handled...
+				// 留下堆栈跟踪以备后用，实际上可能会解决和处理异常...
 				if (logger.isDebugEnabled()) {
 					String exMsg = ex.getMessage();
 					if (exMsg != null && !exMsg.contains(parameter.getExecutable().toGenericString())) {

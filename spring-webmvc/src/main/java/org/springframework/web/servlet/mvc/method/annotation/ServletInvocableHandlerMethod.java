@@ -93,16 +93,17 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 
 
 	/**
-	 * Invoke the method and handle the return value through one of the
-	 * configured {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers}.
-	 * @param webRequest the current request
+	 * 通过配置的 {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} 之一调用该方法并处理返回值。
+	 *
+	 * @param webRequest   the current request
 	 * @param mavContainer the ModelAndViewContainer for this request
 	 * @param providedArgs "given" arguments matched by type (not resolved)
 	 */
 	public void invokeAndHandle(ServletWebRequest webRequest, ModelAndViewContainer mavContainer,
-			Object... providedArgs) throws Exception {
+								Object... providedArgs) throws Exception {
 		// 调用方法
 		Object returnValue = invokeForRequest(webRequest, mavContainer, providedArgs);
+		// 设置状态返回码
 		setResponseStatus(webRequest);
 
 		if (returnValue == null) {
@@ -111,8 +112,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 				mavContainer.setRequestHandled(true);
 				return;
 			}
-		}
-		else if (StringUtils.hasText(getResponseStatusReason())) {
+		} else if (StringUtils.hasText(getResponseStatusReason())) {
 			mavContainer.setRequestHandled(true);
 			return;
 		}
@@ -123,8 +123,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 			// 返回值处理器
 			this.returnValueHandlers.handleReturnValue(
 					returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			if (logger.isTraceEnabled()) {
 				logger.trace(formatErrorForReturnValue(returnValue), ex);
 			}
@@ -133,31 +132,33 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 	}
 
 	/**
-	 * Set the response status according to the {@link ResponseStatus} annotation.
+	 * 根据 {@link ResponseStatus} 注释设置响应状态。
 	 */
 	private void setResponseStatus(ServletWebRequest webRequest) throws IOException {
+		// 获取状态码
 		HttpStatus status = getResponseStatus();
 		if (status == null) {
 			return;
 		}
 
+		// 响应请求
 		HttpServletResponse response = webRequest.getResponse();
 		if (response != null) {
 			String reason = getResponseStatusReason();
 			if (StringUtils.hasText(reason)) {
 				response.sendError(status.value(), reason);
-			}
-			else {
+			} else {
 				response.setStatus(status.value());
 			}
 		}
 
-		// To be picked up by RedirectView
+		// 由 RedirectView 获取
 		webRequest.getRequest().setAttribute(View.RESPONSE_STATUS_ATTRIBUTE, status);
 	}
 
 	/**
 	 * Does the given request qualify as "not modified"?
+	 *
 	 * @see ServletWebRequest#checkNotModified(long)
 	 * @see ServletWebRequest#checkNotModified(String)
 	 */
@@ -207,8 +208,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 			super((Callable<Object>) () -> {
 				if (result instanceof Exception) {
 					throw (Exception) result;
-				}
-				else if (result instanceof Throwable) {
+				} else if (result instanceof Throwable) {
 					throw new NestedServletException("Async processing failed", (Throwable) result);
 				}
 				return result;

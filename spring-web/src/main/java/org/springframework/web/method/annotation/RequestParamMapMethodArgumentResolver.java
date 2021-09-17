@@ -39,48 +39,50 @@ import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 
 /**
- * Resolves {@link Map} method arguments annotated with an @{@link RequestParam}
- * where the annotation does not specify a request parameter name.
- *
- * <p>The created {@link Map} contains all request parameter name/value pairs,
- * or all multipart files for a given parameter name if specifically declared
- * with {@link MultipartFile} as the value type. If the method parameter type is
- * {@link MultiValueMap} instead, the created map contains all request parameters
- * and all their values for cases where request parameters have multiple values
- * (or multiple multipart files of the same name).
+ * 解析用 @{@link RequestParam} 注释的 {@link Map} 方法参数，
+ * 其中注释未指定请求参数名称。 <p>创建的 {@link Map} 包含所有请求参数名称值对，
+ * 或者给定参数名称的所有多部分文件，如果使用 {@link MultipartFile} 作为值类型特别声明。
+ * 如果方法参数类型为 {@link MultiValueMap}，则创建的映射包含所有请求参数及其所有值，
+ * 用于请求参数具有多个值（或多个同名的多部分文件）的情况。
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
  * @author Juergen Hoeller
- * @since 3.1
  * @see RequestParamMethodArgumentResolver
  * @see HttpServletRequest#getParameterMap()
  * @see MultipartRequest#getMultiFileMap()
  * @see MultipartRequest#getFileMap()
+ * @since 3.1
  */
 public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
+		// 解析@RequestParam注解的参数
 		RequestParam requestParam = parameter.getParameterAnnotation(RequestParam.class);
-		return (requestParam != null && Map.class.isAssignableFrom(parameter.getParameterType()) &&
-				!StringUtils.hasText(requestParam.name()));
+		return (// 带@RequestParam的参数
+				requestParam != null
+				// Map的父类或者父接口或者本身
+				&& Map.class.isAssignableFrom(parameter.getParameterType())
+				// @RequestParam的name属性值为空
+				&& !StringUtils.hasText(requestParam.name()));
 	}
 
 	@Override
 	public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
-			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
+								  NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
 
 		ResolvableType resolvableType = ResolvableType.forMethodParameter(parameter);
 
+		// 值为List类型的Map实现
 		if (MultiValueMap.class.isAssignableFrom(parameter.getParameterType())) {
 			// MultiValueMap
 			Class<?> valueType = resolvableType.as(MultiValueMap.class).getGeneric(1).resolve();
 			if (valueType == MultipartFile.class) {
+				// 解析成MultipartRequest
 				MultipartRequest multipartRequest = MultipartResolutionDelegate.resolveMultipartRequest(webRequest);
 				return (multipartRequest != null ? multipartRequest.getMultiFileMap() : new LinkedMultiValueMap<>(0));
-			}
-			else if (valueType == Part.class) {
+			} else if (valueType == Part.class) {
 				HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 				if (servletRequest != null && MultipartResolutionDelegate.isMultipartRequest(servletRequest)) {
 					Collection<Part> parts = servletRequest.getParts();
@@ -91,8 +93,8 @@ public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgum
 					return result;
 				}
 				return new LinkedMultiValueMap<>(0);
-			}
-			else {
+			} else {
+				// 将参数赋值到MultiValueMap中
 				Map<String, String[]> parameterMap = webRequest.getParameterMap();
 				MultiValueMap<String, String> result = new LinkedMultiValueMap<>(parameterMap.size());
 				parameterMap.forEach((key, values) -> {
@@ -102,16 +104,13 @@ public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgum
 				});
 				return result;
 			}
-		}
-
-		else {
+		} else {
 			// Regular Map
 			Class<?> valueType = resolvableType.asMap().getGeneric(1).resolve();
 			if (valueType == MultipartFile.class) {
 				MultipartRequest multipartRequest = MultipartResolutionDelegate.resolveMultipartRequest(webRequest);
 				return (multipartRequest != null ? multipartRequest.getFileMap() : new LinkedHashMap<>(0));
-			}
-			else if (valueType == Part.class) {
+			} else if (valueType == Part.class) {
 				HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 				if (servletRequest != null && MultipartResolutionDelegate.isMultipartRequest(servletRequest)) {
 					Collection<Part> parts = servletRequest.getParts();
@@ -124,9 +123,10 @@ public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgum
 					return result;
 				}
 				return new LinkedHashMap<>(0);
-			}
-			else {
+			} else {
 				Map<String, String[]> parameterMap = webRequest.getParameterMap();
+				// 说明通过Map接收的参数实际类型为LinkedHashMap<String, String>
+				// 如果设置其他泛型的参数会被转换成String，这样容易出问题
 				Map<String, String> result = new LinkedHashMap<>(parameterMap.size());
 				parameterMap.forEach((key, values) -> {
 					if (values.length > 0) {

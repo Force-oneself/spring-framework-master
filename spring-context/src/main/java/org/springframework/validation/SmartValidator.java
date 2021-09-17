@@ -19,8 +19,7 @@ package org.springframework.validation;
 import org.springframework.lang.Nullable;
 
 /**
- * Extended variant of the {@link Validator} interface, adding support for
- * validation 'hints'.
+ * {@link Validator} 接口的扩展变体，添加了对验证“提示”的支持。
  *
  * @author Juergen Hoeller
  * @author Sam Brannen

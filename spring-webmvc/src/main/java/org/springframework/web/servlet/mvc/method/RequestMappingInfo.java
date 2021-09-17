@@ -277,8 +277,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	}
 
 	/**
-	 * Return the "consumes" condition of this {@link RequestMappingInfo};
-	 * or instance with 0 consumes expressions (never {@code null}).
+	 * 返回此 {@link RequestMappingInfo} 的“消耗”条件；或 0 的实例消耗表达式（从不{@code null}）。
 	 */
 	public ConsumesRequestCondition getConsumesCondition() {
 		return this.consumesCondition;

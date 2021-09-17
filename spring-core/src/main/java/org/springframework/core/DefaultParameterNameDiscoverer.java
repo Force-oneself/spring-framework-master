@@ -46,7 +46,9 @@ public class DefaultParameterNameDiscoverer extends PrioritizedParameterNameDisc
 		if (KotlinDetector.isKotlinReflectPresent() && !IN_NATIVE_IMAGE) {
 			addDiscoverer(new KotlinReflectionParameterNameDiscoverer());
 		}
+		// 添加使用JDK8的反射工具内省参数名（基于'-parameters'编译器发现）的参数名发现器
 		addDiscoverer(new StandardReflectionParameterNameDiscoverer());
+		// 添加基于ASM库对Class文件的解析获取LocalVariableTable信息来发现参数名发现器
 		addDiscoverer(new LocalVariableTableParameterNameDiscoverer());
 	}
 

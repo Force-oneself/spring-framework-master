@@ -77,6 +77,7 @@ public class ControllerAdviceBean implements Ordered {
 
 	/**
 	 * Create a {@code ControllerAdviceBean} using the given bean instance.
+	 *
 	 * @param bean the bean instance
 	 */
 	public ControllerAdviceBean(Object bean) {
@@ -92,9 +93,10 @@ public class ControllerAdviceBean implements Ordered {
 	/**
 	 * Create a {@code ControllerAdviceBean} using the given bean name and
 	 * {@code BeanFactory}.
-	 * @param beanName the name of the bean
+	 *
+	 * @param beanName    the name of the bean
 	 * @param beanFactory a {@code BeanFactory} to retrieve the bean type initially
-	 * and later to resolve the actual bean
+	 *                    and later to resolve the actual bean
 	 */
 	public ControllerAdviceBean(String beanName, BeanFactory beanFactory) {
 		this(beanName, beanFactory, null);
@@ -104,11 +106,12 @@ public class ControllerAdviceBean implements Ordered {
 	 * Create a {@code ControllerAdviceBean} using the given bean name,
 	 * {@code BeanFactory}, and {@link ControllerAdvice @ControllerAdvice}
 	 * annotation.
-	 * @param beanName the name of the bean
-	 * @param beanFactory a {@code BeanFactory} to retrieve the bean type initially
-	 * and later to resolve the actual bean
+	 *
+	 * @param beanName         the name of the bean
+	 * @param beanFactory      a {@code BeanFactory} to retrieve the bean type initially
+	 *                         and later to resolve the actual bean
 	 * @param controllerAdvice the {@code @ControllerAdvice} annotation for the
-	 * bean, or {@code null} if not yet retrieved
+	 *                         bean, or {@code null} if not yet retrieved
 	 * @since 5.2
 	 */
 	public ControllerAdviceBean(String beanName, BeanFactory beanFactory, @Nullable ControllerAdvice controllerAdvice) {
@@ -143,6 +146,7 @@ public class ControllerAdviceBean implements Ordered {
 	 * <li>Otherwise use {@link Ordered#LOWEST_PRECEDENCE} as the default, fallback
 	 * order value.</li>
 	 * </ul>
+	 *
 	 * @see #resolveBean()
 	 */
 	@Override
@@ -160,18 +164,15 @@ public class ControllerAdviceBean implements Ordered {
 				if (!isScopedProxy && !ScopedProxyUtils.isScopedTarget(beanName)) {
 					resolvedBean = resolveBean();
 				}
-			}
-			else {
+			} else {
 				resolvedBean = resolveBean();
 			}
 
 			if (resolvedBean instanceof Ordered) {
 				this.order = ((Ordered) resolvedBean).getOrder();
-			}
-			else if (this.beanType != null) {
+			} else if (this.beanType != null) {
 				this.order = OrderUtils.getOrder(this.beanType, Ordered.LOWEST_PRECEDENCE);
-			}
-			else {
+			} else {
 				this.order = Ordered.LOWEST_PRECEDENCE;
 			}
 		}
@@ -197,10 +198,9 @@ public class ControllerAdviceBean implements Ordered {
 	 */
 	public Object resolveBean() {
 		if (this.resolvedBean == null) {
-			// this.beanOrName must be a String representing the bean name if
-			// this.resolvedBean is null.
+			// 如果 this.resolvedBean 为空，则 this.beanOrName 必须是表示 bean 名称的字符串。
 			Object resolvedBean = obtainBeanFactory().getBean((String) this.beanOrName);
-			// Don't cache non-singletons (e.g., prototypes).
+			// 不要缓存非单例（例如原型）。
 			if (!this.isSingleton) {
 				return resolvedBean;
 			}
@@ -217,9 +217,10 @@ public class ControllerAdviceBean implements Ordered {
 	/**
 	 * Check whether the given bean type should be advised by this
 	 * {@code ControllerAdviceBean}.
+	 *
 	 * @param beanType the type of the bean to check
-	 * @since 4.0
 	 * @see ControllerAdvice
+	 * @since 4.0
 	 */
 	public boolean isApplicableToBeanType(@Nullable Class<?> beanType) {
 		return this.beanTypePredicate.test(beanType);
@@ -250,11 +251,11 @@ public class ControllerAdviceBean implements Ordered {
 
 
 	/**
-	 * Find beans annotated with {@link ControllerAdvice @ControllerAdvice} in the
-	 * given {@link ApplicationContext} and wrap them as {@code ControllerAdviceBean}
-	 * instances.
-	 * <p>As of Spring Framework 5.2, the {@code ControllerAdviceBean} instances
-	 * in the returned list are sorted using {@link OrderComparator#sort(List)}.
+	 * 在给定的 {@link ApplicationContext} 中查找用 {@link ControllerAdvice @ControllerAdvice} 注释的 bean，
+	 * 并将它们包装为 {@code ControllerAdviceBean} 实例。
+	 * <p>从 Spring Framework 5.2 开始，返回列表中的 {@code ControllerAdviceBean}
+	 * 实例使用 {@link OrderComparatorsort(List)} 进行排序。
+	 *
 	 * @see #getOrder()
 	 * @see OrderComparator
 	 * @see Ordered
@@ -265,8 +266,7 @@ public class ControllerAdviceBean implements Ordered {
 			if (!ScopedProxyUtils.isScopedTarget(name)) {
 				ControllerAdvice controllerAdvice = context.findAnnotationOnBean(name, ControllerAdvice.class);
 				if (controllerAdvice != null) {
-					// Use the @ControllerAdvice annotation found by findAnnotationOnBean()
-					// in order to avoid a subsequent lookup of the same annotation.
+					// 使用 findAnnotationOnBean() 找到的 @ControllerAdvice 注释以避免后续查找相同的注释。
 					adviceBeans.add(new ControllerAdviceBean(name, context, controllerAdvice));
 				}
 			}

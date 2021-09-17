@@ -112,12 +112,13 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	@Nullable
 	public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
 								  NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
-		// RequestParamMethodArgumentResolver->AbstractNamedValueMethodArgumentResolver
+		// 获取到参数解析器
 		HandlerMethodArgumentResolver resolver = getArgumentResolver(parameter);
 		if (resolver == null) {
 			throw new IllegalArgumentException("Unsupported parameter type [" +
 					parameter.getParameterType().getName() + "]. supportsParameter should be called first.");
 		}
+		// 交给真正能处理的参数解析器去处理参数
 		return resolver.resolveArgument(parameter, mavContainer, webRequest, binderFactory);
 	}
 
@@ -126,7 +127,9 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	 */
 	@Nullable
 	private HandlerMethodArgumentResolver getArgumentResolver(MethodParameter parameter) {
+		// 先从缓存中获取
 		HandlerMethodArgumentResolver result = this.argumentResolverCache.get(parameter);
+		// 没有就遍历执行解析器
 		if (result == null) {
 			for (HandlerMethodArgumentResolver resolver : this.argumentResolvers) {
 				if (resolver.supportsParameter(parameter)) {

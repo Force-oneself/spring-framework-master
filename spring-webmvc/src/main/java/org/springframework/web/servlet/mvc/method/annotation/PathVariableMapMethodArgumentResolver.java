@@ -45,9 +45,12 @@ public class PathVariableMapMethodArgumentResolver implements HandlerMethodArgum
 
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
+		// 需要被@PathVariable标注
 		PathVariable ann = parameter.getParameterAnnotation(PathVariable.class);
-		return (ann != null && Map.class.isAssignableFrom(parameter.getParameterType()) &&
-				!StringUtils.hasText(ann.value()));
+		// Map及父类参数类型
+		return (ann != null && Map.class.isAssignableFrom(parameter.getParameterType())
+				// PathVariable的value必须没有内容
+				&& !StringUtils.hasText(ann.value()));
 	}
 
 	/**

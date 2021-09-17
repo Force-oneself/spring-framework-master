@@ -45,39 +45,40 @@ public final class MethodIntrospector {
 
 
 	/**
-	 * Select methods on the given target type based on the lookup of associated metadata.
-	 * <p>Callers define methods of interest through the {@link MetadataLookup} parameter,
-	 * allowing to collect the associated metadata into the result map.
-	 * @param targetType the target type to search methods on
-	 * @param metadataLookup a {@link MetadataLookup} callback to inspect methods of interest,
-	 * returning non-null metadata to be associated with a given method if there is a match,
-	 * or {@code null} for no match
-	 * @return the selected methods associated with their metadata (in the order of retrieval),
-	 * or an empty map in case of no match
+	 * 根据相关元数据的查找，选择给定目标类型的方法。 <p>调用者通过 {@link MetadataLookup} 参数定义感兴趣的方法，
+	 * 允许将关联的元数据收集到结果映射中。 @param targetType 在@param metadataLookup
+	 * 上搜索方法的目标类型{@link MetadataLookup} 回调以检查感兴趣的方法，
+	 * 如果匹配，则返回与给定方法相关联的非空元数据，或者{@code null}不匹配 @return 与其元数据关联的选定方法（按检索顺序），
+	 * 或者在不匹配的情况下返回空映射
 	 */
 	public static <T> Map<Method, T> selectMethods(Class<?> targetType, final MetadataLookup<T> metadataLookup) {
 		final Map<Method, T> methodMap = new LinkedHashMap<>();
 		Set<Class<?>> handlerTypes = new LinkedHashSet<>();
 		Class<?> specificHandlerType = null;
-
+		// 非代理类
 		if (!Proxy.isProxyClass(targetType)) {
 			specificHandlerType = ClassUtils.getUserClass(targetType);
 			handlerTypes.add(specificHandlerType);
 		}
+		// 获取所有的接口Class并换成Set集合添加进handlerTypes
 		handlerTypes.addAll(ClassUtils.getAllInterfacesForClassAsSet(targetType));
 
+		// 遍历所有方法
 		for (Class<?> currentHandlerType : handlerTypes) {
 			final Class<?> targetClass = (specificHandlerType != null ? specificHandlerType : currentHandlerType);
-
+			// 这个method拿到的是遍历出来符合MethodFilter
 			ReflectionUtils.doWithMethods(currentHandlerType, method -> {
 				Method specificMethod = ClassUtils.getMostSpecificMethod(method, targetClass);
+				// 检查该方法是不是满足MetadataLookup
 				T result = metadataLookup.inspect(specificMethod);
 				if (result != null) {
+					// 获取桥接方法
 					Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);
 					if (bridgedMethod == specificMethod || metadataLookup.inspect(bridgedMethod) == null) {
 						methodMap.put(specificMethod, result);
 					}
 				}
+				// 非桥接并非合成的方法
 			}, ReflectionUtils.USER_DECLARED_METHODS);
 		}
 
@@ -87,9 +88,10 @@ public final class MethodIntrospector {
 	/**
 	 * Select methods on the given target type based on a filter.
 	 * <p>Callers define methods of interest through the {@code MethodFilter} parameter.
-	 * @param targetType the target type to search methods on
+	 *
+	 * @param targetType   the target type to search methods on
 	 * @param methodFilter a {@code MethodFilter} to help
-	 * recognize handler methods of interest
+	 *                     recognize handler methods of interest
 	 * @return the selected methods, or an empty set in case of no match
 	 */
 	public static Set<Method> selectMethods(Class<?> targetType, final ReflectionUtils.MethodFilter methodFilter) {
@@ -103,12 +105,13 @@ public final class MethodIntrospector {
 	 * on one of the target type's interfaces or on the target type itself.
 	 * <p>Matches on user-declared interfaces will be preferred since they are likely
 	 * to contain relevant metadata that corresponds to the method on the target class.
-	 * @param method the method to check
+	 *
+	 * @param method     the method to check
 	 * @param targetType the target type to search methods on
-	 * (typically an interface-based JDK proxy)
+	 *                   (typically an interface-based JDK proxy)
 	 * @return a corresponding invocable method on the target type
 	 * @throws IllegalStateException if the given method is not invocable on the given
-	 * target type (typically due to a proxy mismatch)
+	 *                               target type (typically due to a proxy mismatch)
 	 */
 	public static Method selectInvocableMethod(Method method, Class<?> targetType) {
 		if (method.getDeclaringClass().isAssignableFrom(targetType)) {
@@ -120,20 +123,18 @@ public final class MethodIntrospector {
 			for (Class<?> ifc : targetType.getInterfaces()) {
 				try {
 					return ifc.getMethod(methodName, parameterTypes);
-				}
-				catch (NoSuchMethodException ex) {
+				} catch (NoSuchMethodException ex) {
 					// Alright, not on this interface then...
 				}
 			}
 			// A final desperate attempt on the proxy class itself...
 			return targetType.getMethod(methodName, parameterTypes);
-		}
-		catch (NoSuchMethodException ex) {
+		} catch (NoSuchMethodException ex) {
 			throw new IllegalStateException(String.format(
 					"Need to invoke method '%s' declared on target class '%s', " +
-					"but not found in any interface(s) of the exposed proxy type. " +
-					"Either pull the method up to an interface or switch to CGLIB " +
-					"proxies by enforcing proxy-target-class mode in your configuration.",
+							"but not found in any interface(s) of the exposed proxy type. " +
+							"Either pull the method up to an interface or switch to CGLIB " +
+							"proxies by enforcing proxy-target-class mode in your configuration.",
 					method.getName(), method.getDeclaringClass().getSimpleName()));
 		}
 	}
@@ -141,6 +142,7 @@ public final class MethodIntrospector {
 
 	/**
 	 * A callback interface for metadata lookup on a given method.
+	 *
 	 * @param <T> the type of metadata returned
 	 */
 	@FunctionalInterface
@@ -148,6 +150,7 @@ public final class MethodIntrospector {
 
 		/**
 		 * Perform a lookup on the given method and return associated metadata, if any.
+		 *
 		 * @param method the method to inspect
 		 * @return non-null metadata to be associated with a method if there is a match,
 		 * or {@code null} for no match

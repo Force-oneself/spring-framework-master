@@ -97,6 +97,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	@Nullable
 	private HandlerMethodMappingNamingStrategy<T> namingStrategy;
 
+	/**
+	 * 映射处理器注册中心
+	 */
 	private final MappingRegistry mappingRegistry = new MappingRegistry();
 
 
@@ -216,7 +219,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @see #handlerMethodsInitialized
 	 */
 	protected void initHandlerMethods() {
+		// 拿到所有的Bean name
 		for (String beanName : getCandidateBeanNames()) {
+			// 非代理的
 			if (!beanName.startsWith(SCOPED_TARGET_NAME_PREFIX)) {
 				processCandidateBean(beanName);
 			}
@@ -225,7 +230,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	}
 
 	/**
-	 * Determine the names of candidate beans in the application context.
+	 * 确定应用程序上下文中候选 bean 的名称。
 	 *
 	 * @see #setDetectHandlerMethodsInAncestorContexts
 	 * @see BeanFactoryUtils#beanNamesForTypeIncludingAncestors
@@ -252,29 +257,33 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	protected void processCandidateBean(String beanName) {
 		Class<?> beanType = null;
 		try {
+			// 获取Bean的Class
 			beanType = obtainApplicationContext().getType(beanName);
 		} catch (Throwable ex) {
-			// An unresolvable bean type, probably from a lazy bean - let's ignore it.
+			// 一个无法解析的 bean 类型，可能来自一个惰性 bean - 让我们忽略它。
 			if (logger.isTraceEnabled()) {
 				logger.trace("Could not resolve type for bean '" + beanName + "'", ex);
 			}
 		}
+		// 有@Controller或者@RequestMapping，在RequestMappingHandlerMapping中会被筛选通过
 		if (beanType != null && isHandler(beanType)) {
 			detectHandlerMethods(beanName);
 		}
 	}
 
 	/**
-	 * Look for handler methods in the specified handler bean.
+	 * 在指定的处理程序 bean 中查找处理程序方法。
 	 *
 	 * @param handler either a bean name or an actual handler instance
 	 * @see #getMappingForMethod
 	 */
 	protected void detectHandlerMethods(Object handler) {
+		// 因为这个方法是在初始化时调用的
 		Class<?> handlerType = (handler instanceof String ?
 				obtainApplicationContext().getType((String) handler) : handler.getClass());
 
 		if (handlerType != null) {
+			// 获取原始的类型，因为有些是代理类
 			Class<?> userType = ClassUtils.getUserClass(handlerType);
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {
@@ -288,8 +297,11 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			if (logger.isTraceEnabled()) {
 				logger.trace(formatMappings(userType, methods));
 			}
+			// 处理方法
 			methods.forEach((method, mapping) -> {
+				// 获取可执行的方法
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
+				// 注册处理器方法
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -390,6 +402,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	@Nullable
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
 		List<Match> matches = new ArrayList<>();
+		// 直接路径匹配
 		List<T> directPathMatches = this.mappingRegistry.getMappingsByDirectPath(lookupPath);
 		if (directPathMatches != null) {
 			addMatchingMappings(directPathMatches, matches, request);
@@ -399,6 +412,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 		if (!matches.isEmpty()) {
 			Match bestMatch = matches.get(0);
+			// size大于1说明匹配多个处理方法，需要选举最佳的
 			if (matches.size() > 1) {
 				Comparator<Match> comparator = new MatchComparator(getMappingComparator(request));
 				matches.sort(comparator);
@@ -410,6 +424,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 					return PREFLIGHT_AMBIGUOUS_MATCH;
 				}
 				Match secondBestMatch = matches.get(1);
+				// 比较前两个最佳的如何等价，则说明路径有多个相同的处理方法
 				if (comparator.compare(bestMatch, secondBestMatch) == 0) {
 					Method m1 = bestMatch.handlerMethod.getMethod();
 					Method m2 = secondBestMatch.handlerMethod.getMethod();
@@ -556,9 +571,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
 
 	/**
-	 * A registry that maintains all mappings to handler methods, exposing methods
-	 * to perform lookups and providing concurrent access.
-	 * <p>Package-private for testing purposes.
+	 * 一个注册表，它维护到处理程序方法的所有映射，公开执行查找的方法并提供并发访问。 <p>用于测试目的的包私有。
 	 */
 	class MappingRegistry {
 
@@ -573,7 +586,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
 
 		/**
-		 * Return all registrations.
+		 * 返回所有注册。
 		 *
 		 * @since 5.3
 		 */
@@ -622,7 +635,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		}
 
 		public void register(T mapping, Object handler, Method method) {
-			// Assert that the handler method is not a suspending one.
+			// 断言处理程序方法不是挂起方法.
 			if (KotlinDetector.isKotlinType(method.getDeclaringClass())) {
 				Class<?>[] types = method.getParameterTypes();
 				if ((types.length > 0) && "kotlin.coroutines.Continuation".equals(types[types.length - 1].getName())) {
@@ -631,6 +644,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 			this.readWriteLock.writeLock().lock();
 			try {
+				// 创建处理器方法
 				HandlerMethod handlerMethod = createHandlerMethod(handler, method);
 				validateMethodMapping(handlerMethod, mapping);
 
@@ -640,17 +654,19 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 				}
 
 				String name = null;
+				// 命名策略
 				if (getNamingStrategy() != null) {
 					name = getNamingStrategy().getName(handlerMethod, mapping);
 					addMappingName(name, handlerMethod);
 				}
-
+				// cors配置处理
 				CorsConfiguration config = initCorsConfiguration(handler, method, mapping);
 				if (config != null) {
 					config.validateAllowCredentials();
 					this.corsLookup.put(handlerMethod, config);
 				}
 
+				// 注册映射
 				this.registry.put(mapping, new MappingRegistration<>(mapping, handlerMethod, directPaths, name));
 			} finally {
 				this.readWriteLock.writeLock().unlock();

@@ -66,12 +66,13 @@ public final class BridgeMethodResolver {
 	 * if no more specific one could be found)
 	 */
 	public static Method findBridgedMethod(Method bridgeMethod) {
+		// 自定义的方法都不是桥接方法
 		if (!bridgeMethod.isBridge()) {
 			return bridgeMethod;
 		}
 		Method bridgedMethod = cache.get(bridgeMethod);
 		if (bridgedMethod == null) {
-			// Gather all methods with matching name and parameter size.
+			// 收集具有匹配名称和参数大小的所有方法。
 			List<Method> candidateMethods = new ArrayList<>();
 			MethodFilter filter = candidateMethod ->
 					isBridgedCandidateFor(candidateMethod, bridgeMethod);
