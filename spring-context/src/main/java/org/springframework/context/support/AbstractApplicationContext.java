@@ -716,6 +716,7 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		}
 		beanFactory.addPropertyEditorRegistrar(new ResourceEditorRegistrar(this, getEnvironment()));
 
+		// 对一些Aware接口注入
 		beanFactory.addBeanPostProcessor(new ApplicationContextAwareProcessor(this));
 		beanFactory.ignoreDependencyInterface(EnvironmentAware.class);
 		beanFactory.ignoreDependencyInterface(EmbeddedValueResolverAware.class);
@@ -934,11 +935,8 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 					beanFactory.getBean(CONVERSION_SERVICE_BEAN_NAME, ConversionService.class));
 		}
 
-		/**
-		 * 如果之前没有任何bean后处理器
-		 * （例如PropertyPlaceholderConfigurer bean）注册过以下任何一个，则注册一个默认的嵌入式值解析器：
-		 * 此时，主要是为了注释属性值中的解析
- 		 */
+		// 如果之前没有任何bean后处理器 例如PropertyPlaceholderConfigurer bean）注册过以下任何一个，则注册一个默认的嵌入式值解析器：
+		// 此时，主要是为了注释属性值中的解析
 		if (!beanFactory.hasEmbeddedValueResolver()) {
 			beanFactory.addEmbeddedValueResolver(strVal -> getEnvironment().resolvePlaceholders(strVal));
 		}

@@ -188,6 +188,7 @@ public abstract class ClassUtils {
 	public static ClassLoader getDefaultClassLoader() {
 		ClassLoader cl = null;
 		try {
+			// 先拿当前线程的上下文加载器
 			cl = Thread.currentThread().getContextClassLoader();
 		}
 		catch (Throwable ex) {
@@ -195,10 +196,12 @@ public abstract class ClassUtils {
 		}
 		if (cl == null) {
 			// No thread context class loader -> use class loader of this class.
+			// 拿工具类的加载器
 			cl = ClassUtils.class.getClassLoader();
 			if (cl == null) {
 				// getClassLoader() returning null indicates the bootstrap ClassLoader
 				try {
+					// 拿ClassLoader的加载器
 					cl = ClassLoader.getSystemClassLoader();
 				}
 				catch (Throwable ex) {

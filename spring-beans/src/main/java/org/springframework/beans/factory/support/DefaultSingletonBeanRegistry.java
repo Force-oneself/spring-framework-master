@@ -203,7 +203,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	}
 
 	/**
-	 *返回以给定名称注册的（原始）单例对象 <p>检查已经实例化的单例，并且还允许对当前创建的单例的早期引用（解析循环引用）.
+	 * 返回以给定名称注册的（原始）单例对象 <p>检查已经实例化的单例，并且还允许对当前创建的单例的早期引用（解析循环引用）.
 	 *
 	 * @param beanName            the name of the bean to look for
 	 * @param allowEarlyReference whether early references should be created or not
@@ -262,6 +262,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					this.suppressedExceptions = new LinkedHashSet<>();
 				}
 				try {
+					// 创建Bean核心入口
 					singletonObject = singletonFactory.getObject();
 					newSingleton = true;
 				} catch (IllegalStateException ex) {
@@ -285,6 +286,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 					afterSingletonCreation(beanName);
 				}
 				if (newSingleton) {
+					// 加入一级缓存
 					addSingleton(beanName, singletonObject);
 				}
 			}
@@ -483,12 +485,12 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * B -> D
 	 * C -> D
 	 * D -> A
-	 *
-	 * 	首先我们A在创建的时候dependentBeanMap是为没有值的，后续创建DependOn时才会添加进去，
-	 * 	但是DependOn创建的时候也会涉及DependOn问题，所以会出现循环依赖问题
-	 *
-	 *  假设我们走B的路线:  create(A,B) -> create(B,D) -> create(D,A) -> create(A,B)
-	 * 	dependentBeanMap:     A:B   ->  A:B,B:D  ->   A:B,B:D,D:A   ->  B:D,D:A,A:B(dependentBeans.contains循环依赖 )
+	 * <p>
+	 * 首先我们A在创建的时候dependentBeanMap是为没有值的，后续创建DependOn时才会添加进去，
+	 * 但是DependOn创建的时候也会涉及DependOn问题，所以会出现循环依赖问题
+	 * <p>
+	 * 假设我们走B的路线:  create(A,B) -> create(B,D) -> create(D,A) -> create(A,B)
+	 * dependentBeanMap:     A:B   ->  A:B,B:D  ->   A:B,B:D,D:A   ->  B:D,D:A,A:B(dependentBeans.contains循环依赖 )
 	 *
 	 * @param beanName          当前BeanName
 	 * @param dependentBeanName 所依赖的Bean

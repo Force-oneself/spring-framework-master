@@ -106,6 +106,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 			final Constructor<?> ctor, Object... args) {
 
+		// 没有重载方法
 		if (!bd.hasMethodOverrides()) {
 			if (System.getSecurityManager() != null) {
 				// use own privileged to change accessibility (when security is on)
@@ -114,8 +115,10 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					return null;
 				});
 			}
+			// 反射实例化
 			return BeanUtils.instantiateClass(ctor, args);
 		}
+		// 带重载方法的
 		else {
 			return instantiateWithMethodInjection(bd, beanName, owner, ctor, args);
 		}

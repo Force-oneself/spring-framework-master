@@ -136,6 +136,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
             Object object = doGetObjectFromFactoryBean(factory, beanName);
             if (shouldPostProcess) {
                 try {
+                	// FactoryBean只会参与初始化后的后置处理器
                     object = postProcessObjectFromFactoryBean(object, beanName);
                 } catch (Throwable ex) {
                     throw new BeanCreationException(beanName, "Post-processing of FactoryBean's object failed", ex);
@@ -157,6 +158,7 @@ public abstract class FactoryBeanRegistrySupport extends DefaultSingletonBeanReg
     private Object doGetObjectFromFactoryBean(FactoryBean<?> factory, String beanName) throws BeanCreationException {
         Object object;
         try {
+        	// Force-Spring 拓展点：FactoryBean调用getObject
             if (System.getSecurityManager() != null) {
                 AccessControlContext acc = getAccessControlContext();
                 try {

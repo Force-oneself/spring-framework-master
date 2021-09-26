@@ -48,6 +48,9 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	@Nullable
 	private ClassLoader proxyClassLoader = ClassUtils.getDefaultClassLoader();
 
+	/**
+	 * 标识类加载器是否配置
+	 */
 	private boolean classLoaderConfigured = false;
 
 
@@ -88,6 +91,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	@Override
 	public void setBeanClassLoader(ClassLoader classLoader) {
 		if (!this.classLoaderConfigured) {
+			// 拿Bean的类加载器
 			this.proxyClassLoader = classLoader;
 		}
 	}

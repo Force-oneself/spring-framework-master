@@ -51,16 +51,19 @@ public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotat
 	@Override
 	@Nullable
 	public Object getLazyResolutionProxyIfNecessary(DependencyDescriptor descriptor, @Nullable String beanName) {
+		// Force-Spring 知识点：@Lazy懒加载代理实现方法
 		return (isLazy(descriptor) ? buildLazyResolutionProxy(descriptor, beanName) : null);
 	}
 
 	protected boolean isLazy(DependencyDescriptor descriptor) {
+		// 标注@Lazy且value=true
 		for (Annotation ann : descriptor.getAnnotations()) {
 			Lazy lazy = AnnotationUtils.getAnnotation(ann, Lazy.class);
 			if (lazy != null && lazy.value()) {
 				return true;
 			}
 		}
+		// 获取参数上的注解，处理同上
 		MethodParameter methodParam = descriptor.getMethodParameter();
 		if (methodParam != null) {
 			Method method = methodParam.getMethod();
@@ -121,12 +124,16 @@ public class ContextAnnotationAutowireCandidateResolver extends QualifierAnnotat
 			}
 		};
 
+		// Spring代理工具
 		ProxyFactory pf = new ProxyFactory();
+		// 生成TargetSource
 		pf.setTargetSource(ts);
 		Class<?> dependencyType = descriptor.getDependencyType();
 		if (dependencyType.isInterface()) {
+			// 代理的接口
 			pf.addInterface(dependencyType);
 		}
+		// 代理生成目标Bean的代理
 		return pf.getProxy(dlbf.getBeanClassLoader());
 	}
 

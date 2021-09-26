@@ -287,20 +287,15 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	protected <T> T doGetBean(
 			String name, @Nullable Class<T> requiredType, @Nullable Object[] args, boolean typeCheckOnly)
 			throws BeansException {
-		/**
-		 * 别名转换
-		 * 去除 FactoryBean 的修饰符，最终取指定 alias 所表示的 beanName。
-		 * 因为有可能获取到以 & 开头的 FactoryBean
-		 * 所以要进行转化（关于 BeanFactory 和 FactoryBean 后面会进行区分）
-		 */
+		// 别名转换 去除 FactoryBean 的修饰符，最终取指定 alias 所表示的 beanName。
+	 	// 因为有可能获取到以 & 开头的 FactoryBean
+	 	// 所以要进行转化（关于 BeanFactory 和 FactoryBean 后面会进行区分）
 		String beanName = transformedBeanName(name);
 		Object bean;
 
-		/**
-		 * 检查缓存中是否存在 该 Bean 的单例（Bean默认的Scope = singleton）
-		 * 如容器初始化的时候或者其他地方已经调用过 getBean() 完成了初始化
-		 * 默认在装载 Bean 的时候会先去检查 singletonObjects 是否存在，如果存在直接提取缓存的。
-		 */
+		// 检查缓存中是否存在 该 Bean 的单例（Bean默认的Scope = singleton）
+		// 如容器初始化的时候或者其他地方已经调用过 getBean() 完成了初始化
+		// 默认在装载 Bean 的时候会先去检查 singletonObjects 是否存在，如果存在直接提取缓存的。
 		Object sharedInstance = getSingleton(beanName);
 		if (sharedInstance != null && args == null) {
 			if (logger.isTraceEnabled()) {
@@ -349,7 +344,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				if (requiredType != null) {
 					beanCreation.tag("beanType", requiredType::toString);
 				}
-				// 将存储XML配置文件的GernericBeanDefinition转换成RootBeanDefinition
+				// 将存储XML配置文件的GenericBeanDefinition转换成RootBeanDefinition
 				// 如果BeanName是子Bean的话会合并父类的相关属性
 				RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
@@ -387,6 +382,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 							throw ex;
 						}
 					});
+					// FactoryBean的处理入口
 					bean = getObjectForBeanInstance(sharedInstance, name, beanName, mbd);
 				}
 				// 多例
@@ -394,6 +390,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					Object prototypeInstance = null;
 					try {
 						beforePrototypeCreation(beanName);
+						// 与单例的区别就是没有存入缓存池中
 						prototypeInstance = createBean(beanName, mbd, args);
 					} finally {
 						afterPrototypeCreation(beanName);
@@ -406,6 +403,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 					if (!StringUtils.hasLength(scopeName)) {
 						throw new IllegalStateException("No scope name defined for bean ´" + beanName + "'");
 					}
+					// 需要自定义实现Scope，RequestScope，SessionScope，ServletContextScope等
 					Scope scope = this.scopes.get(scopeName);
 					if (scope == null) {
 						throw new IllegalStateException("No Scope registered for scope name '" + scopeName + "'");

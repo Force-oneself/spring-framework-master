@@ -359,8 +359,8 @@ public class ConstructorArgumentValues {
 	}
 
 	/**
-	 * Return the number of argument values held in this instance,
-	 * counting both indexed and generic argument values.
+	 * 返回此实例中保存的参数值的数量，
+	 * 计算索引和通用参数值。
 	 */
 	public int getArgumentCount() {
 		return (this.indexedArgumentValues.size() + this.genericArgumentValues.size());
