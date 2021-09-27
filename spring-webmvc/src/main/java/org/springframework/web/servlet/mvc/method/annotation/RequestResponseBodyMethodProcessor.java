@@ -115,6 +115,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 	@Override
 	public boolean supportsReturnType(MethodParameter returnType) {
 		return (AnnotatedElementUtils.hasAnnotation(returnType.getContainingClass(), ResponseBody.class)
+				// 方法返回类型添加@ResponseBody
 				|| returnType.hasMethodAnnotation(ResponseBody.class));
 	}
 

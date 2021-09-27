@@ -191,10 +191,12 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			targetType = String.class;
 		} else {
 			body = value;
+			// 返回值类型
 			valueType = getReturnValueType(body, returnType);
 			targetType = GenericTypeResolver.resolveType(getGenericType(returnType), returnType.getContainingClass());
 		}
 
+		// Resource类型
 		if (isResourceType(value, returnType)) {
 			outputMessage.getHeaders().set(HttpHeaders.ACCEPT_RANGES, "bytes");
 			if (value != null && inputMessage.getHeaders().getFirst(HttpHeaders.RANGE) != null &&
@@ -269,11 +271,13 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		if (selectedMediaType != null) {
 			selectedMediaType = selectedMediaType.removeQualityValue();
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
-				GenericHttpMessageConverter genericConverter = (converter instanceof GenericHttpMessageConverter ?
-						(GenericHttpMessageConverter<?>) converter : null);
-				if (genericConverter != null ?
-						((GenericHttpMessageConverter) converter).canWrite(targetType, valueType, selectedMediaType) :
-						converter.canWrite(valueType, selectedMediaType)) {
+				GenericHttpMessageConverter genericConverter = (converter instanceof GenericHttpMessageConverter
+						? (GenericHttpMessageConverter<?>) converter
+						: null);
+				if (genericConverter != null
+						? ((GenericHttpMessageConverter) converter).canWrite(targetType, valueType, selectedMediaType)
+						: converter.canWrite(valueType, selectedMediaType)) {
+					// @ControllerAdvice入口
 					body = getAdvice().beforeBodyWrite(body, returnType, selectedMediaType,
 							(Class<? extends HttpMessageConverter<?>>) converter.getClass(),
 							inputMessage, outputMessage);

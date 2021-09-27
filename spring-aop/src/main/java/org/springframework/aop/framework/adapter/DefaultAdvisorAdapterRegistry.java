@@ -62,12 +62,14 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 			throw new UnknownAdviceTypeException(adviceObject);
 		}
 		Advice advice = (Advice) adviceObject;
+		// 方法拦截器
 		if (advice instanceof MethodInterceptor) {
 			// So well-known it doesn't even need an adapter.
 			return new DefaultPointcutAdvisor(advice);
 		}
 		for (AdvisorAdapter adapter : this.adapters) {
 			// Check that it is supported.
+			// 适配器检查是否有支持的Advice
 			if (adapter.supportsAdvice(advice)) {
 				return new DefaultPointcutAdvisor(advice);
 			}

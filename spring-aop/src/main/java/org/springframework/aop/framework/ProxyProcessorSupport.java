@@ -108,14 +108,20 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	protected void evaluateProxyInterfaces(Class<?> beanClass, ProxyFactory proxyFactory) {
 		// 拿到所有实现的接口
 		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());
+		// 存在可以代理接口的标识
 		boolean hasReasonableProxyInterface = false;
 		for (Class<?> ifc : targetInterfaces) {
-			if (!isConfigurationCallbackInterface(ifc) && !isInternalLanguageInterface(ifc) &&
-					ifc.getMethods().length > 0) {
+			// 非Spring框架自带的生命周期类，Aware接口
+			if (!isConfigurationCallbackInterface(ifc)
+					// 非内置语言的接口
+					&& !isInternalLanguageInterface(ifc)
+					// 接口至少有一个方法
+					&& ifc.getMethods().length > 0) {
 				hasReasonableProxyInterface = true;
 				break;
 			}
 		}
+		// 有可以代理的接口
 		if (hasReasonableProxyInterface) {
 			// 必须允许介绍；不能只将接口设置为目标的接口.
 			for (Class<?> ifc : targetInterfaces) {
@@ -123,6 +129,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 			}
 		}
 		else {
+			// 没有可以代理的接口即需要代理该类本身
 			proxyFactory.setProxyTargetClass(true);
 		}
 	}

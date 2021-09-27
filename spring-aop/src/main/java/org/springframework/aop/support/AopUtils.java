@@ -316,6 +316,7 @@ public abstract class AopUtils {
 		for (Advisor candidate : candidateAdvisors) {
 			if (candidate instanceof IntroductionAdvisor) {
 				// already processed
+				// 已经处理过，跳过
 				continue;
 			}
 			if (canApply(candidate, clazz, hasIntroductions)) {

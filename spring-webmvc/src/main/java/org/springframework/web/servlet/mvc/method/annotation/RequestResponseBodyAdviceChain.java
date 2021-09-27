@@ -136,6 +136,7 @@ class RequestResponseBodyAdviceChain implements RequestBodyAdvice, ResponseBodyA
 			Class<? extends HttpMessageConverter<?>> converterType,
 			ServerHttpRequest request, ServerHttpResponse response) {
 
+		// Force-Spring 知识点：@ControllerAdvice注解使用
 		for (ResponseBodyAdvice<?> advice : getMatchingAdvice(returnType, ResponseBodyAdvice.class)) {
 			if (advice.supports(returnType, converterType)) {
 				body = ((ResponseBodyAdvice<T>) advice).beforeBodyWrite((T) body, returnType,

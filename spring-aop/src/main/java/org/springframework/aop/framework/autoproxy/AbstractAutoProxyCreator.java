@@ -319,15 +319,19 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (StringUtils.hasLength(beanName) && this.targetSourcedBeans.contains(beanName)) {
 			return bean;
 		}
+		// 需要跳过代理
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
+		// 如果是切面的框架类或者是一些Advisor及特定的类
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
+			// 标志着这些Bean需要跳过代理
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
 		// Create proxy if we have advice.
+		// 需要创建代理钱需要创建Advisor，Advice等前置类
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
@@ -431,25 +435,32 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			AutoProxyUtils.exposeTargetClass((ConfigurableListableBeanFactory) this.beanFactory, beanName, beanClass);
 		}
 
+		// Spring代理工厂，工具类
 		ProxyFactory proxyFactory = new ProxyFactory();
+		// 将当前配置拷贝到代理工厂中去
 		proxyFactory.copyFrom(this);
 
+		// 非代理当前类本身
 		if (!proxyFactory.isProxyTargetClass()) {
+			// 需要代理类本身的处理
 			if (shouldProxyTargetClass(beanClass, beanName)) {
 				proxyFactory.setProxyTargetClass(true);
 			}
 			else {
+				// 这里推断代理接口是否存在
 				evaluateProxyInterfaces(beanClass, proxyFactory);
 			}
 		}
-
+		// 构建Advisor
 		Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);
 		proxyFactory.addAdvisors(advisors);
 		proxyFactory.setTargetSource(targetSource);
+		// 子类拓展
 		customizeProxyFactory(proxyFactory);
 
 		proxyFactory.setFrozen(this.freezeProxy);
 		if (advisorsPreFiltered()) {
+			// 是否需要前置过滤
 			proxyFactory.setPreFiltered(true);
 		}
 
@@ -494,13 +505,16 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	protected Advisor[] buildAdvisors(@Nullable String beanName, @Nullable Object[] specificInterceptors) {
 		// 正确处理原型...
+		// 解析特定拦截器Advisor
 		Advisor[] commonInterceptors = resolveInterceptorNames();
 
 		List<Object> allInterceptors = new ArrayList<>();
 		if (specificInterceptors != null) {
+			// 添加特殊拦截器
 			allInterceptors.addAll(Arrays.asList(specificInterceptors));
 			if (commonInterceptors.length > 0) {
 				if (this.applyCommonInterceptorsFirst) {
+					// 设置通用拦截器优先
 					allInterceptors.addAll(0, Arrays.asList(commonInterceptors));
 				}
 				else {
