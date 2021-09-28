@@ -125,8 +125,7 @@ public class ProxyConfig implements Serializable {
 	}
 
 	/**
-	 * Return whether the AOP proxy will expose the AOP proxy for
-	 * each invocation.
+	 * 返回 AOP 代理是否会公开 AOP 代理每次调用。
 	 */
 	public boolean isExposeProxy() {
 		return this.exposeProxy;

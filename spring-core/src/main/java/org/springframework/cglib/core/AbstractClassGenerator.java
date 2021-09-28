@@ -93,25 +93,23 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 			}
 		};
 
-		private static final Function<AbstractClassGenerator, Object> GET_KEY = new Function<AbstractClassGenerator, Object>() {
-			public Object apply(AbstractClassGenerator gen) {
-				return gen.key;
-			}
-		};
+
+		private static final Function<AbstractClassGenerator, Object> GET_KEY = gen -> gen.key;
 
 		public ClassLoaderData(ClassLoader classLoader) {
 			if (classLoader == null) {
 				throw new IllegalArgumentException("classLoader == null is not yet supported");
 			}
-			this.classLoader = new WeakReference<ClassLoader>(classLoader);
-			Function<AbstractClassGenerator, Object> load =
-					new Function<AbstractClassGenerator, Object>() {
-						public Object apply(AbstractClassGenerator gen) {
-							Class klass = gen.generate(ClassLoaderData.this);
-							return gen.wrapCachedClass(klass);
-						}
-					};
-			generatedClasses = new LoadingCache<AbstractClassGenerator, Object, Object>(GET_KEY, load);
+			this.classLoader = new WeakReference<>(classLoader);
+
+			// 对象生成接口
+			Function<AbstractClassGenerator, Object> load = gen ->
+					// 包装返回缓存Class
+					gen.wrapCachedClass(
+							// 产生字节码文件
+							gen.generate(ClassLoaderData.this));
+			// 二级缓存
+			generatedClasses = new LoadingCache<>(GET_KEY, load);
 		}
 
 		public ClassLoader getClassLoader() {
@@ -127,10 +125,12 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 		}
 
 		public Object get(AbstractClassGenerator gen, boolean useCache) {
+			// 不使用缓存代理对象
 			if (!useCache) {
+				// 产生字节码文件Class
 				return gen.generate(ClassLoaderData.this);
-			}
-			else {
+			} else {
+				// 从二级缓存中取出代理对象
 				Object cachedValue = generatedClasses.get(gen);
 				return gen.unwrapCachedValue(cachedValue);
 			}
@@ -184,6 +184,7 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 	 * <p>
 	 * Classes are cached per-<code>ClassLoader</code> using a <code>WeakHashMap</code>, to allow
 	 * the generated classes to be removed when the associated loader is garbage collected.
+	 *
 	 * @param classLoader the loader to generate the new class with, or null to use the default
 	 */
 	public void setClassLoader(ClassLoader classLoader) {
@@ -198,6 +199,7 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 
 	/**
 	 * Override the default naming policy.
+	 *
 	 * @param namingPolicy the custom policy, or null to use the default
 	 * @see DefaultNamingPolicy
 	 */
@@ -292,6 +294,7 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 	 * Default implementation returns <code>null</code> for using a default protection domain. Sub-classes may
 	 * override to use a more specific protection domain.
 	 * </p>
+	 *
 	 * @return the protection domain (<code>null</code> for using a default)
 	 */
 	protected ProtectionDomain getProtectionDomain() {
@@ -300,15 +303,21 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 
 	protected Object create(Object key) {
 		try {
+			// 获取类加载器
 			ClassLoader loader = getClassLoader();
+			// 一级缓存
 			Map<ClassLoader, ClassLoaderData> cache = CACHE;
 			ClassLoaderData data = cache.get(loader);
 			if (data == null) {
+				// 当前类锁
 				synchronized (AbstractClassGenerator.class) {
 					cache = CACHE;
 					data = cache.get(loader);
+					// DCK
 					if (data == null) {
-						Map<ClassLoader, ClassLoaderData> newCache = new WeakHashMap<ClassLoader, ClassLoaderData>(cache);
+						// 对旧缓存进行拷贝到新的缓存
+						Map<ClassLoader, ClassLoaderData> newCache = new WeakHashMap<>(cache);
+						// 缓存类加载器和对象生成函数的封装
 						data = new ClassLoaderData(loader);
 						newCache.put(loader, data);
 						CACHE = newCache;
@@ -321,11 +330,9 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 				return firstInstance((Class) obj);
 			}
 			return nextInstance(obj);
-		}
-		catch (RuntimeException | Error ex) {
+		} catch (RuntimeException | Error ex) {
 			throw ex;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			throw new CodeGenerationException(ex);
 		}
 	}
@@ -335,6 +342,7 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 		Object save = CURRENT.get();
 		CURRENT.set(this);
 		try {
+			// 获取缓存中类加载器
 			ClassLoader classLoader = data.getClassLoader();
 			if (classLoader == null) {
 				throw new IllegalStateException("ClassLoader is null while trying to define class " +
@@ -342,20 +350,24 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 						"Please file an issue at cglib's issue tracker.");
 			}
 			synchronized (classLoader) {
+				// 使用命名策略生成Class名
 				String name = generateClassName(data.getUniqueNamePredicate());
 				data.reserveName(name);
 				this.setClassName(name);
 			}
+			// 尝试加载
 			if (attemptLoad) {
 				try {
 					gen = classLoader.loadClass(getClassName());
+					// 加载成功直接返回
 					return gen;
-				}
-				catch (ClassNotFoundException e) {
+				} catch (ClassNotFoundException e) {
 					// ignore
 				}
 			}
+			// 使用指定策略生成字节码
 			byte[] b = strategy.generate(this);
+			// 获取类名
 			String className = ClassNameReader.getClassName(new ClassReader(b));
 			ProtectionDomain protectionDomain = getProtectionDomain();
 			synchronized (classLoader) { // just in case
@@ -364,14 +376,11 @@ abstract public class AbstractClassGenerator<T> implements ClassGenerator {
 				// SPRING PATCH END
 			}
 			return gen;
-		}
-		catch (RuntimeException | Error ex) {
+		} catch (RuntimeException | Error ex) {
 			throw ex;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			throw new CodeGenerationException(ex);
-		}
-		finally {
+		} finally {
 			CURRENT.set(save);
 		}
 	}

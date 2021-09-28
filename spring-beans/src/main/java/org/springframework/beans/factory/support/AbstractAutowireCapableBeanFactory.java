@@ -721,6 +721,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (targetType != null && !mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			boolean matchingOnlyFactoryBean = typesToMatch.length == 1 && typesToMatch[0] == FactoryBean.class;
 			for (SmartInstantiationAwareBeanPostProcessor bp : getBeanPostProcessorCache().smartInstantiationAware) {
+				// Force-Spring 拓展点：SmartInstantiationAwareBeanPostProcessor调用predictBeanType
 				Class<?> predicted = bp.predictBeanType(targetType, beanName);
 				if (predicted != null &&
 						(!matchingOnlyFactoryBean || FactoryBean.class.isAssignableFrom(predicted))) {
@@ -1182,7 +1183,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					// 实例化前置处理器
 					bean = applyBeanPostProcessorsBeforeInstantiation(targetType, beanName);
 					if (bean != null) {
-						// 实例化后置处理器
+						// 初始化后置处理器
 						bean = applyBeanPostProcessorsAfterInitialization(bean, beanName);
 					}
 				}

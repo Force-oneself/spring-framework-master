@@ -530,8 +530,8 @@ public class Enhancer extends AbstractClassGenerator {
 			setThreadCallbacks(callbacks);
 			try {
 				// Explicit reference equality is added here just in case Arrays.equals does not have one
-				if (primaryConstructorArgTypes == argumentTypes ||
-						Arrays.equals(primaryConstructorArgTypes, argumentTypes)) {
+				if (primaryConstructorArgTypes == argumentTypes
+						|| Arrays.equals(primaryConstructorArgTypes, argumentTypes)) {
 					// If we have relevant Constructor instance at hand, just call it
 					// This skips "get constructors" machinery
 					return ReflectUtils.newInstance(primaryConstructor, arguments);
@@ -560,15 +560,23 @@ public class Enhancer extends AbstractClassGenerator {
 	}
 
 	private Object createHelper() {
+		// 这里主要是一些参数校验，比较简单
 		preValidate();
-		Object key = KEY_FACTORY.newInstance((superclass != null) ? superclass.getName() : null,
+		// 根据代理配置生成缓存的key，作为二级缓存的key值，而一级缓存的key则是ClassLoader
+		Object key = KEY_FACTORY.newInstance(
+				(superclass != null)
+						? superclass.getName()
+						: null,
 				ReflectUtils.getNames(interfaces),
-				filter == ALL_ZERO ? null : new WeakCacheKey<CallbackFilter>(filter),
+				filter == ALL_ZERO
+						? null
+						: new WeakCacheKey<CallbackFilter>(filter),
 				callbackTypes,
 				useFactory,
 				interceptDuringConstruction,
 				serialVersionUID);
 		this.currentKey = key;
+		// 调用父类AbstractClassGenerator的create()方法
 		Object result = super.create(key);
 		return result;
 	}
@@ -923,14 +931,13 @@ public class Enhancer extends AbstractClassGenerator {
 	private Object createUsingReflection(Class type) {
 		setThreadCallbacks(type, callbacks);
 		try {
-
 			if (argumentTypes != null) {
-
+				// 带参数反射实例化
 				return ReflectUtils.newInstance(type, argumentTypes, arguments);
 
 			}
 			else {
-
+				// 无参数实例化
 				return ReflectUtils.newInstance(type);
 
 			}

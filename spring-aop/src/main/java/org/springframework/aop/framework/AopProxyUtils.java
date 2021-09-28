@@ -116,20 +116,25 @@ public abstract class AopProxyUtils {
 	 * @see DecoratingProxy
 	 */
 	static Class<?>[] completeProxiedInterfaces(AdvisedSupport advised, boolean decoratingProxy) {
+		// 获取代理的接口，不包含本身
 		Class<?>[] specifiedInterfaces = advised.getProxiedInterfaces();
 		if (specifiedInterfaces.length == 0) {
 			// No user-specified interfaces: check whether target class is an interface.
+			// 没有接口代理即代理本身
 			Class<?> targetClass = advised.getTargetClass();
 			if (targetClass != null) {
+				// 代理的对象为接口
 				if (targetClass.isInterface()) {
 					advised.setInterfaces(targetClass);
 				}
+				// 代理的对象为代理类
 				else if (Proxy.isProxyClass(targetClass)) {
 					advised.setInterfaces(targetClass.getInterfaces());
 				}
 				specifiedInterfaces = advised.getProxiedInterfaces();
 			}
 		}
+		// SpringProxy接口代理
 		boolean addSpringProxy = !advised.isInterfaceProxied(SpringProxy.class);
 		boolean addAdvised = !advised.isOpaque() && !advised.isInterfaceProxied(Advised.class);
 		boolean addDecoratingProxy = (decoratingProxy && !advised.isInterfaceProxied(DecoratingProxy.class));
@@ -144,6 +149,7 @@ public abstract class AopProxyUtils {
 			nonUserIfcCount++;
 		}
 		Class<?>[] proxiedInterfaces = new Class<?>[specifiedInterfaces.length + nonUserIfcCount];
+		// 将指定的接口拷贝到proxiedInterfaces
 		System.arraycopy(specifiedInterfaces, 0, proxiedInterfaces, 0, specifiedInterfaces.length);
 		int index = specifiedInterfaces.length;
 		if (addSpringProxy) {
