@@ -1274,10 +1274,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	public Object resolveDependency(DependencyDescriptor descriptor, @Nullable String requestingBeanName,
 			@Nullable Set<String> autowiredBeanNames, @Nullable TypeConverter typeConverter) throws BeansException {
 
+		// 初始化参数名称发现器
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
+		// 创建Optional类型的依赖
 		if (Optional.class == descriptor.getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
+		// ObjectFactory和ObjectProvider接口可以提供依赖的Bean
 		else if (ObjectFactory.class == descriptor.getDependencyType() ||
 				ObjectProvider.class == descriptor.getDependencyType()) {
 			return new DependencyObjectProvider(descriptor, requestingBeanName);
@@ -1287,7 +1290,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 		else {
 			// 如果注入点需要，则为实际依赖项目标的延迟解析构建代理。默认实现只返回null
-			// @Lazy的实现
+			// Force-Spring 知识点：@Lazy的实现
 			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 					descriptor, requestingBeanName);
 			// 不为null说明被Lazy代理了
@@ -1315,8 +1318,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			if (value != null) {
 				if (value instanceof String) {
 					String strVal = resolveEmbeddedValue((String) value);
-					BeanDefinition bd = (beanName != null && containsBean(beanName) ?
-							getMergedBeanDefinition(beanName) : null);
+					BeanDefinition bd = (beanName != null && containsBean(beanName)
+							? getMergedBeanDefinition(beanName)
+							: null);
 					value = evaluateBeanDefinitionString(strVal, bd);
 				}
 				TypeConverter converter = (typeConverter != null ? typeConverter : getTypeConverter());
@@ -1838,6 +1842,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 						super.resolveCandidate(beanName, requiredType, beanFactory));
 			}
 		};
+		// 实际解析依赖
 		Object result = doResolveDependency(descriptorToUse, beanName, null, null);
 		return (result instanceof Optional ? (Optional<?>) result : Optional.ofNullable(result));
 	}

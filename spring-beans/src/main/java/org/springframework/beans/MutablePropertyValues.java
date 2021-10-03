@@ -69,8 +69,8 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * @see #addPropertyValues(PropertyValues)
 	 */
 	public MutablePropertyValues(@Nullable PropertyValues original) {
-		// We can optimize this because it's all new:
-		// There is no replacement of existing property values.
+		// 我们可以优化它，因为它是全新的：
+		// 没有替换现有的属性值。
 		if (original != null) {
 			PropertyValue[] pvs = original.getPropertyValues();
 			this.propertyValueList = new ArrayList<>(pvs.length);
