@@ -334,6 +334,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			if (encodedResource.getEncoding() != null) {
 				inputSource.setEncoding(encodedResource.getEncoding());
 			}
+			// 实际的处理加载BeanDefinition
 			return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 		}
 		catch (IOException ex) {
@@ -386,7 +387,9 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
+			// 加载Document文件
 			Document doc = doLoadDocument(inputSource, resource);
+			// 注册BeanDefinition
 			int count = registerBeanDefinitions(doc, resource);
 			if (logger.isDebugEnabled()) {
 				logger.debug("Loaded " + count + " bean definitions from " + resource);
@@ -505,10 +508,13 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
+		// 创建Document读取BeanDefinition的读取器
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
+		// 加载前的一个BeanDefinition的数量
 		int countBefore = getRegistry().getBeanDefinitionCount();
 		// 最终是xml解析器取注册
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
+		// 返回解析出的数据
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

@@ -118,13 +118,14 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 */
 	@SuppressWarnings("deprecation")  // for Environment.acceptsProfiles(String...)
 	protected void doRegisterBeanDefinitions(Element root) {
-		// Any nested <beans> elements will cause recursion in this method. In
-		// order to propagate and preserve <beans> default-* attributes correctly,
-		// keep track of the current (parent) delegate, which may be null. Create
-		// the new (child) delegate with a reference to the parent for fallback purposes,
-		// then ultimately reset this.delegate back to its original (parent) reference.
-		// this behavior emulates a stack of delegates without actually necessitating one.
+		// 任何嵌套的 <beans> 元素都将导致此方法中的递归。 在
+		// 为了正确传播和保留 <beans> default-* 属性，
+		// 跟踪当前（父）委托，它可能为空。 创建
+		// 新的（子）委托，带有对父级的引用，用于回退目的，
+		// 然后最终将 this.delegate 重置为其原始（父）引用。
+		// 这种行为模拟了一堆委托，而实际上并不需要一个。
 		BeanDefinitionParserDelegate parent = this.delegate;
+		// 创建BeanDefinitionParserDelegate
 		this.delegate = createDelegate(getReaderContext(), root, parent);
 
 		if (this.delegate.isDefaultNamespace(root)) {
@@ -145,7 +146,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		preProcessXml(root);
-		// 这里开始解析响应的标签，上面两个都是拓展
+		// 这里开始解析响应的标签，上下两个都是拓展
 		parseBeanDefinitions(root, this.delegate);
 		postProcessXml(root);
 
@@ -166,6 +167,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * @param root the DOM root element of the document
 	 */
 	protected void parseBeanDefinitions(Element root, BeanDefinitionParserDelegate delegate) {
+		// 是不是Spring中规约好的默认命名空间中元素
 		if (delegate.isDefaultNamespace(root)) {
 			NodeList nl = root.getChildNodes();
 			for (int i = 0; i < nl.getLength(); i++) {
@@ -176,7 +178,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 						parseDefaultElement(ele, delegate);
 					}
 					else {
-						// 解析Spring内置的一些标签
+						// 解析Spring内置自定义的一些标签
 						delegate.parseCustomElement(ele);
 					}
 				}
