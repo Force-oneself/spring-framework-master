@@ -39,7 +39,7 @@ public class BeanConfig {
         return new ChildBean(autowiredBean());
     }
 
-    @Bean
+//    @Bean
     public AopBean aopBean() {
         return new AopBean();
     }

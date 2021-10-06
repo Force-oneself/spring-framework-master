@@ -72,7 +72,7 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-
+		// 设置一个默认InfrastructureAdvisorAutoProxyCreator
 		return registerOrEscalateApcAsRequired(InfrastructureAdvisorAutoProxyCreator.class, registry, source);
 	}
 
@@ -101,8 +101,10 @@ public abstract class AopConfigUtils {
 	}
 
 	public static void forceAutoProxyCreatorToUseClassProxying(BeanDefinitionRegistry registry) {
+		// 仅在存在时
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition definition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
+			// 强制设置CGLIB代理
 			definition.getPropertyValues().add("proxyTargetClass", Boolean.TRUE);
 		}
 	}
@@ -120,20 +122,26 @@ public abstract class AopConfigUtils {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
+		// 判断容器中是否已经存在框架内部自带的自动代理创建器
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
+			// 框架内部自带的自动代理创建器与外面指定的不一致时
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
+				// 获取到优先级高的自动代理创建器
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				int requiredPriority = findPriorityForClass(cls);
+				// 下标越小优先级越低
 				if (currentPriority < requiredPriority) {
+					// 设置高优先级
 					apcDefinition.setBeanClassName(cls.getName());
 				}
 			}
 			return null;
 		}
-
+		// 容器中没有内置的自动代理创建器，则创建一个
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
 		beanDefinition.setSource(source);
+		// 设置最高优先级
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);
 		beanDefinition.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
 		registry.registerBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME, beanDefinition);
@@ -141,6 +149,7 @@ public abstract class AopConfigUtils {
 	}
 
 	private static int findPriorityForClass(Class<?> clazz) {
+		// 按升级顺序存储自动代理创建者类
 		return APC_PRIORITY_LIST.indexOf(clazz);
 	}
 
