@@ -86,9 +86,9 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 
 		@Override
 		public boolean matches(Class<?> clazz) {
-			if (TransactionalProxy.class.isAssignableFrom(clazz) ||
-					TransactionManager.class.isAssignableFrom(clazz) ||
-					PersistenceExceptionTranslator.class.isAssignableFrom(clazz)) {
+			if (TransactionalProxy.class.isAssignableFrom(clazz)
+					|| TransactionManager.class.isAssignableFrom(clazz)
+					|| PersistenceExceptionTranslator.class.isAssignableFrom(clazz)) {
 				return false;
 			}
 			TransactionAttributeSource tas = getTransactionAttributeSource();

@@ -309,9 +309,11 @@ public class ReflectUtils {
 
 	@SuppressWarnings("deprecation")  // on JDK 9
 	public static Object newInstance(final Constructor cstruct, final Object[] args) {
+		// 可访问标志为了备份后续恢复
 		boolean flag = cstruct.isAccessible();
 		try {
 			if (!flag) {
+				// false需要手动设置true
 				cstruct.setAccessible(true);
 			}
 			Object result = cstruct.newInstance(args);
@@ -335,7 +337,9 @@ public class ReflectUtils {
 
 	public static Constructor getConstructor(Class type, Class[] parameterTypes) {
 		try {
+			// 根据参数获取构造函数
 			Constructor constructor = type.getDeclaredConstructor(parameterTypes);
+			// 设置可访问
 			if (System.getSecurityManager() != null) {
 				AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
 					constructor.setAccessible(true);

@@ -113,15 +113,19 @@ public class DefaultResponseErrorHandler implements ResponseErrorHandler {
 	 */
 	@Override
 	public void handleError(ClientHttpResponse response) throws IOException {
+		// 将响应码转换成HttpStatus
 		HttpStatus statusCode = HttpStatus.resolve(response.getRawStatusCode());
 		if (statusCode == null) {
+			// 获取到响应体
 			byte[] body = getResponseBody(response);
+			// 将响应消息抛出打印
 			String message = getErrorMessage(response.getRawStatusCode(),
 					response.getStatusText(), body, getCharset(response));
 			throw new UnknownHttpStatusCodeException(message,
 					response.getRawStatusCode(), response.getStatusText(),
 					response.getHeaders(), body, getCharset(response));
 		}
+		// 状态码不为空则说明有响应返回
 		handleError(response, statusCode);
 	}
 

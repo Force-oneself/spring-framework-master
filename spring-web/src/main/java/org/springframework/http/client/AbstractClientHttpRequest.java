@@ -63,6 +63,7 @@ public abstract class AbstractClientHttpRequest implements ClientHttpRequest {
 	@Override
 	public final ClientHttpResponse execute() throws IOException {
 		assertNotExecuted();
+		// 子类实现拓展
 		ClientHttpResponse result = executeInternal(this.headers);
 		this.executed = true;
 		return result;

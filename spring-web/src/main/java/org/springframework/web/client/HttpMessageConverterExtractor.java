@@ -90,9 +90,11 @@ public class HttpMessageConverterExtractor<T> implements ResponseExtractor<T> {
 		if (!responseWrapper.hasMessageBody() || responseWrapper.hasEmptyMessageBody()) {
 			return null;
 		}
+		// 获取请求Content-Type
 		MediaType contentType = getContentType(responseWrapper);
 
 		try {
+			// 遍历解析消息
 			for (HttpMessageConverter<?> messageConverter : this.messageConverters) {
 				if (messageConverter instanceof GenericHttpMessageConverter) {
 					GenericHttpMessageConverter<?> genericMessageConverter =

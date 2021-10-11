@@ -99,6 +99,9 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 	 */
 	private static final boolean shouldIgnoreXml = SpringProperties.getFlag("spring.xml.ignore");
 
+	/**
+	 * 以下是各种json格式工具是否加载标识
+	 */
 	private static final boolean romePresent;
 
 	private static final boolean jaxb2Present;
@@ -144,9 +147,13 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 	 * Default {@link HttpMessageConverter HttpMessageConverters} are initialized.
 	 */
 	public RestTemplate() {
+		// 字节数组消息转换
 		this.messageConverters.add(new ByteArrayHttpMessageConverter());
+		// 字符消息转换
 		this.messageConverters.add(new StringHttpMessageConverter());
+		// 资源消息的转换
 		this.messageConverters.add(new ResourceHttpMessageConverter(false));
+		// 是否要忽略掉XML消息转换，默认false
 		if (!shouldIgnoreXml) {
 			try {
 				this.messageConverters.add(new SourceHttpMessageConverter<>());
@@ -156,7 +163,7 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 			}
 		}
 		this.messageConverters.add(new AllEncompassingFormHttpMessageConverter());
-
+		// 根据不同json工具进行多样化支持
 		if (romePresent) {
 			this.messageConverters.add(new AtomFeedHttpMessageConverter());
 			this.messageConverters.add(new RssChannelHttpMessageConverter());
@@ -322,7 +329,9 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 	@Override
 	@Nullable
 	public <T> T getForObject(String url, Class<T> responseType, Object... uriVariables) throws RestClientException {
+		// 保存Header的回调
 		RequestCallback requestCallback = acceptHeaderRequestCallback(responseType);
+		// 消息转换执行器
 		HttpMessageConverterExtractor<T> responseExtractor =
 				new HttpMessageConverterExtractor<>(responseType, getMessageConverters(), logger);
 		return execute(url, HttpMethod.GET, requestCallback, responseExtractor, uriVariables);
@@ -700,8 +709,9 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 	@Nullable
 	public <T> T execute(String url, HttpMethod method, @Nullable RequestCallback requestCallback,
 			@Nullable ResponseExtractor<T> responseExtractor, Object... uriVariables) throws RestClientException {
-
+		// 通过URI模版管理器获取到URI
 		URI expanded = getUriTemplateHandler().expand(url, uriVariables);
+		// 真正执行的核心
 		return doExecute(expanded, method, requestCallback, responseExtractor);
 	}
 
@@ -763,11 +773,15 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 		Assert.notNull(method, "HttpMethod is required");
 		ClientHttpResponse response = null;
 		try {
+			// 创建实际的客户端请求，OkHttp实现就是在这里通过工厂创建
 			ClientHttpRequest request = createRequest(url, method);
 			if (requestCallback != null) {
+				// 请求回调
 				requestCallback.doWithRequest(request);
 			}
+			// 实际执行请求
 			response = request.execute();
+			// 处理响应
 			handleResponse(url, method, response);
 			return (responseExtractor != null ? responseExtractor.extractData(response) : null);
 		}
@@ -797,6 +811,7 @@ public class RestTemplate extends InterceptingHttpAccessor implements RestOperat
 	 * @see #setErrorHandler
 	 */
 	protected void handleResponse(URI url, HttpMethod method, ClientHttpResponse response) throws IOException {
+		// 获取到异常处理器
 		ResponseErrorHandler errorHandler = getErrorHandler();
 		boolean hasError = errorHandler.hasError(response);
 		if (logger.isDebugEnabled()) {

@@ -548,6 +548,7 @@ public class Enhancer extends AbstractClassGenerator {
 
 		private void setThreadCallbacks(Callback[] callbacks) {
 			try {
+				// 设置回调方法Method
 				setThreadCallbacks.invoke(generatedClass, (Object) callbacks);
 			}
 			catch (IllegalAccessException e) {

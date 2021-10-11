@@ -305,7 +305,7 @@ class ConfigurationClassParser {
                         bdCand = holder.getBeanDefinition();
                     }
                     if (ConfigurationClassUtils.checkConfigurationClassCandidate(bdCand, this.metadataReaderFactory)) {
-                        // TODO parse套娃
+                        // Force-Spring 重点：parse 套娃
                         parse(bdCand.getBeanClassName(), holder.getBeanName());
                     }
                 }
@@ -348,7 +348,7 @@ class ConfigurationClassParser {
                     !this.knownSuperclasses.containsKey(superclass)) {
                 this.knownSuperclasses.put(superclass, configClass);
                 // Superclass found, return its annotation metadata and recurse
-                // TODO 有父类开始俄罗斯套娃了
+                // Force-Spring 重点：有父类开始俄罗斯套娃了
                 return sourceClass.getSuperClass();
             }
         }
@@ -381,7 +381,7 @@ class ConfigurationClassParser {
                 } else {
                     this.importStack.push(configClass);
                     try {
-                        // TODO processConfigurationClass套娃
+                        // Force-Spring 重点：processConfigurationClass 套娃
                         processConfigurationClass(candidate.asConfigClass(configClass), filter);
                     } finally {
                         this.importStack.pop();
@@ -403,7 +403,7 @@ class ConfigurationClassParser {
                     configClass.addBeanMethod(new BeanMethod(methodMetadata, configClass));
                 }
             }
-            // TODO 吐了这玩意也套娃
+            // Force-Spring 重点：processInterfaces 吐了这玩意也套娃
             processInterfaces(configClass, ifc);
         }
     }
@@ -568,7 +568,7 @@ class ConfigurationClassParser {
         if (importCandidates.isEmpty()) {
             return;
         }
-
+		// 检查循环引用
         if (checkForCircularImports && isChainedImportOnStack(configClass)) {
             this.problemReporter.error(new CircularImportProblem(configClass, this.importStack));
         } else {
@@ -590,7 +590,7 @@ class ConfigurationClassParser {
                         } else {
                             String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
                             Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
-                            // TODO 递归套娃
+                            // Force-Spring 重点：processImports 套娃
                             processImports(configClass, currentSourceClass, importSourceClasses, exclusionFilter, false);
                         }
                     }
@@ -606,6 +606,7 @@ class ConfigurationClassParser {
                         // 候选类不是 ImportSelector 或 ImportBeanDefinitionRegistrar -> 将其作为@Configuration 类处理
                         this.importStack.registerImport(
                                 currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
+                        // Force-Spring 重点：processConfigurationClass 套娃
                         processConfigurationClass(candidate.asConfigClass(configClass), exclusionFilter);
                     }
                 }
@@ -817,7 +818,7 @@ class ConfigurationClassParser {
                 grouping.getImports().forEach(entry -> {
                     ConfigurationClass configurationClass = this.configurationClasses.get(entry.getMetadata());
                     try {
-                        // TODO DeferredImportSelector在最后才进行新一轮的Import的处理逻辑
+                        // Force-Spring 重点：processImports 套娃，DeferredImportSelector在最后才进行新一轮的Import的处理逻辑
                         processImports(configurationClass, asSourceClass(configurationClass, exclusionFilter),
                                 Collections.singleton(asSourceClass(entry.getImportClassName(), exclusionFilter)),
                                 exclusionFilter, false);

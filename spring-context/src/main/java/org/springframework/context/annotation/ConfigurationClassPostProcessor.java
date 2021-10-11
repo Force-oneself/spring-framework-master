@@ -378,9 +378,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 						BeanDefinition bd = registry.getBeanDefinition(candidateName);
 						// 检查BeanDefinition是否有@Configuration, @Component, @ComponentScan, @Import, @ImportResource
 						// or @Bean method标注，跟上面的操作时一样的
-						if (ConfigurationClassUtils.checkConfigurationClassCandidate(bd, this.metadataReaderFactory) &&
+						if (ConfigurationClassUtils.checkConfigurationClassCandidate(bd, this.metadataReaderFactory)
 								// 过滤掉已经解析过的
-								!alreadyParsedClasses.contains(bd.getBeanClassName())) {
+								&& !alreadyParsedClasses.contains(bd.getBeanClassName())) {
 							// 最终又进入下一次解析过程
 							candidates.add(new BeanDefinitionHolder(bd, candidateName));
 						}
