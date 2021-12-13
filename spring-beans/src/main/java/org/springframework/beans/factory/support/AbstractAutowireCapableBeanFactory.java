@@ -1282,8 +1282,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// 根据参数解析构造方法
 		// 这里通过拓展点来选择构造方法 @Autowire注解实现
 		Constructor<?>[] ctors = determineConstructorsFromBeanPostProcessors(beanClass, beanName);
-		if (ctors != null || mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR ||
-				mbd.hasConstructorArgumentValues() || !ObjectUtils.isEmpty(args)) {
+		if (ctors != null
+				|| mbd.getResolvedAutowireMode() == AUTOWIRE_CONSTRUCTOR
+				|| mbd.hasConstructorArgumentValues()
+				|| !ObjectUtils.isEmpty(args)) {
 			return autowireConstructor(beanName, mbd, ctors, args);
 		}
 
@@ -1781,6 +1783,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					originalValue = new DependencyDescriptor(new MethodParameter(writeMethod, 0), true);
 				}
 				// 对值进行深层次解析，属性引用的注入
+				// Force-Spring 重点：属性注入入口
 				Object resolvedValue = valueResolver.resolveValueIfNecessary(pv, originalValue);
 				// 拷贝到convertedValue方便后面做对比
 				Object convertedValue = resolvedValue;
