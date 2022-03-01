@@ -13,7 +13,7 @@ import org.springframework.demo.config.BeanConfig;
 public class AopDemo {
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig.class, TxConfig.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig.class);
         AopBean bean = context.getBean(AopBean.class);
         bean.aop();
     }

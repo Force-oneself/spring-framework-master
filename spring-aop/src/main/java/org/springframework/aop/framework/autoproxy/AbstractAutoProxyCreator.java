@@ -120,16 +120,18 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();
 
 	/**
-	 * Indicates whether or not the proxy should be frozen. Overridden from super
-	 * to prevent the configuration from becoming frozen too early.
+	 * 指示是否应冻结代理。从 super 覆盖以防止配置过早冻结
 	 */
 	private boolean freezeProxy = false;
 
 	/**
-	 * Default is no common interceptors.
+	 * 默认是没有通用拦截器
 	 */
 	private String[] interceptorNames = new String[0];
 
+	/**
+	 * 设置通用拦截器优先
+	 */
 	private boolean applyCommonInterceptorsFirst = true;
 
 	@Nullable
@@ -140,8 +142,14 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 	private final Set<String> targetSourcedBeans = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
 
+	/**
+	 * 早期代理的引用
+	 */
 	private final Map<Object, Object> earlyProxyReferences = new ConcurrentHashMap<>(16);
 
+	/**
+	 * 代理的类型
+	 */
 	private final Map<Object, Class<?>> proxyTypes = new ConcurrentHashMap<>(16);
 
 	private final Map<Object, Boolean> advisedBeans = new ConcurrentHashMap<>(256);
@@ -354,7 +362,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		// Create proxy if we have advice.
-		// 需要创建代理钱需要创建Advisor，Advice等前置类
+		// 需要创建代理类前需创建Advisor，Advice等前置类
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
@@ -383,10 +391,14 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * @see #shouldSkip
 	 */
 	protected boolean isInfrastructureClass(Class<?> beanClass) {
-		boolean retVal = Advice.class.isAssignableFrom(beanClass) ||
-				Pointcut.class.isAssignableFrom(beanClass) ||
-				Advisor.class.isAssignableFrom(beanClass) ||
-				AopInfrastructureBean.class.isAssignableFrom(beanClass);
+		// Advice子类
+		boolean retVal = Advice.class.isAssignableFrom(beanClass)
+				// Pointcut子类
+				|| Pointcut.class.isAssignableFrom(beanClass)
+				// Advisor子类
+				|| Advisor.class.isAssignableFrom(beanClass)
+				// 基础Aop接口标识的子类
+				|| AopInfrastructureBean.class.isAssignableFrom(beanClass);
 		if (retVal && logger.isTraceEnabled()) {
 			logger.trace("Did not attempt to auto-proxy infrastructure class [" + beanClass.getName() + "]");
 		}
@@ -536,7 +548,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 */
 	protected Advisor[] buildAdvisors(@Nullable String beanName, @Nullable Object[] specificInterceptors) {
 		// 正确处理原型...
-		// 解析特定拦截器Advisor
+		// 解析通用拦截器Advisor
 		Advisor[] commonInterceptors = resolveInterceptorNames();
 
 		List<Object> allInterceptors = new ArrayList<>();

@@ -90,6 +90,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
                 } else {
                     try {
                     	// 直接从容器中创建Advisor
+						// Force-Spring 重点：Advisor创建的核心
                         advisors.add(this.beanFactory.getBean(name, Advisor.class));
                     } catch (BeanCreationException ex) {
                         Throwable rootCause = ex.getMostSpecificCause();

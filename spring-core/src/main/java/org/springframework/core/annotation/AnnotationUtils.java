@@ -533,8 +533,8 @@ public abstract class AnnotationUtils {
         }
 
         // Shortcut: directly present on the element, with no merging needed?
-        if (AnnotationFilter.PLAIN.matches(annotationType) ||
-                AnnotationsScanner.hasPlainJavaAnnotationsOnly(method)) {
+        if (AnnotationFilter.PLAIN.matches(annotationType)
+				|| AnnotationsScanner.hasPlainJavaAnnotationsOnly(method)) {
             return method.getDeclaredAnnotation(annotationType);
         }
 

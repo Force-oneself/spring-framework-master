@@ -79,6 +79,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 		// invokes proceed() in a `try` block and only invokes the @After advice method
 		// in a corresponding `finally` block.
 		Comparator<Method> adviceKindComparator = new ConvertingComparator<>(
+				// 构造顺序及为他们的排序顺序
 				new InstanceComparator<>(
 						Around.class, Before.class, After.class, AfterReturning.class, AfterThrowing.class),
 				(Converter<Method, Annotation>) method -> {
@@ -119,6 +120,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 	public List<Advisor> getAdvisors(MetadataAwareAspectInstanceFactory aspectInstanceFactory) {
 		Class<?> aspectClass = aspectInstanceFactory.getAspectMetadata().getAspectClass();
 		String aspectName = aspectInstanceFactory.getAspectMetadata().getAspectName();
+		// AspectJ类的校验
 		validate(aspectClass);
 
 		// We need to wrap the MetadataAwareAspectInstanceFactory with a decorator
@@ -128,14 +130,11 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		List<Advisor> advisors = new ArrayList<>();
 		for (Method method : getAdvisorMethods(aspectClass)) {
-			// Prior to Spring Framework 5.2.7, advisors.size() was supplied as the declarationOrderInAspect
-			// to getAdvisor(...) to represent the "current position" in the declared methods list.
-			// However, since Java 7 the "current position" is not valid since the JDK no longer
-			// returns declared methods in the order in which they are declared in the source code.
-			// Thus, we now hard code the declarationOrderInAspect to 0 for all advice methods
-			// discovered via reflection in order to support reliable advice ordering across JVM launches.
-			// Specifically, a value of 0 aligns with the default value used in
-			// AspectJPrecedenceComparator.getAspectDeclarationOrder(Advisor).
+			// 在 Spring Framework 5.2.7 之前，advisors.size() 作为声明OrderInAspect 提供给
+			// getAdvisor(...) 以表示声明的方法列表中的“当前位置”。但是，从 Java 7 开始，“当前位置”无效，
+			// 因为 JDK 不再按照它们在源代码中声明的顺序返回声明的方法。因此，我们现在将通过反射发现的所有建议方法的
+			// declarationOrderInAspect 硬编码为 0，以支持跨 JVM 启动的可靠建议排序。
+			// 具体来说，值 0 与 AspectJPrecedenceComparator.getAspectDeclarationOrder(Advisor)中使用的默认值一致
 			Advisor advisor = getAdvisor(method, lazySingletonAspectInstanceFactory, 0, aspectName);
 			if (advisor != null) {
 				advisors.add(advisor);
@@ -144,6 +143,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 
 		// If it's a per target aspect, emit the dummy instantiating aspect.
 		if (!advisors.isEmpty() && lazySingletonAspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
+			// 内置的一个合成的切面
 			Advisor instantiationAdvisor = new SyntheticInstantiationAdvisor(lazySingletonAspectInstanceFactory);
 			advisors.add(0, instantiationAdvisor);
 		}
@@ -217,6 +217,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 	@Nullable
 	private AspectJExpressionPointcut getPointcut(Method candidateAdviceMethod, Class<?> candidateAspectClass) {
 		AspectJAnnotation<?> aspectJAnnotation =
+				// 查找Before、After等相关的注解
 				AbstractAspectJAdvisorFactory.findAspectJAnnotationOnMethod(candidateAdviceMethod);
 		if (aspectJAnnotation == null) {
 			return null;

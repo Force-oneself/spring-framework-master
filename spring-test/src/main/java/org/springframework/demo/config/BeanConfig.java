@@ -1,6 +1,7 @@
 package org.springframework.demo.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.demo.bean.AopBean;
@@ -16,7 +17,7 @@ import org.springframework.demo.bean.ExpandBean;
  */
 @Configuration
 @EnableAspectJAutoProxy
-//@ComponentScan({"org.springframework.demo"})
+@ComponentScan({"org.springframework.demo"})
 public class BeanConfig {
 
 //    @Bean
@@ -39,7 +40,7 @@ public class BeanConfig {
         return new ChildBean(autowiredBean());
     }
 
-//    @Bean
+    @Bean
     public AopBean aopBean() {
         return new AopBean();
     }
