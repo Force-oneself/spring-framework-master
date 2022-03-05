@@ -63,6 +63,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 
 	@Override
 	public Object postProcessAfterInitialization(Object bean, String beanName) {
+		// 没有切面或者非代理标识的Bean不进行代理
 		if (this.advisor == null || bean instanceof AopInfrastructureBean) {
 			// Ignore AOP infrastructure such as scoped proxies.
 			return bean;
@@ -73,6 +74,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 			if (!advised.isFrozen() && isEligible(AopUtils.getTargetClass(bean))) {
 				// Add our local Advisor to the existing proxy's Advisor chain...
 				if (this.beforeExistingAdvisors) {
+					// 默认设置
 					advised.addAdvisor(0, this.advisor);
 				}
 				else {
@@ -88,6 +90,7 @@ public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSu
 				evaluateProxyInterfaces(bean.getClass(), proxyFactory);
 			}
 			proxyFactory.addAdvisor(this.advisor);
+			// 子类拓展
 			customizeProxyFactory(proxyFactory);
 			return proxyFactory.getProxy(getProxyClassLoader());
 		}

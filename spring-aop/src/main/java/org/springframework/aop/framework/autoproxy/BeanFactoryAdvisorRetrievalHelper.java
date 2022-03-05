@@ -71,6 +71,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
             // 不要在此处初始化 FactoryBeans：我们需要保留所有常规 bean 未初始化以让自动代理创建者应用于它们！
             advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(this.beanFactory,
                     Advisor.class, true, false);
+            // 缓存Advisor的Bean name
             this.cachedAdvisorBeanNames = advisorNames;
         }
         if (advisorNames.length == 0) {

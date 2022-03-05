@@ -17,7 +17,7 @@ import org.springframework.demo.bean.ExpandBean;
  */
 @Configuration
 @EnableAspectJAutoProxy
-@ComponentScan({"org.springframework.demo"})
+@ComponentScan({"org.springframework.demo.aop"})
 public class BeanConfig {
 
 //    @Bean

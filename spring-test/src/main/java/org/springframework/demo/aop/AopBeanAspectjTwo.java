@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
  * @description AopBeanAspectj
  * @date 2021-07-12
  **/
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class AopBeanAspectjTwo {
 
     @Pointcut("execution(* org.springframework.demo.bean.AopBean.*(..))")

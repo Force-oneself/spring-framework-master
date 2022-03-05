@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @date 2021-10-06
  */
 @Configuration
-@EnableTransactionManagement
+//@EnableTransactionManagement
 public class TxConfig {
 
 }
