@@ -142,7 +142,7 @@ public class ProxyConfig implements Serializable {
 	}
 
 	/**
-	 * Return whether the config is frozen, and no advice changes can be made.
+	 * 返回配置是否被冻结，并且不能进行建议更改
 	 */
 	public boolean isFrozen() {
 		return this.frozen;

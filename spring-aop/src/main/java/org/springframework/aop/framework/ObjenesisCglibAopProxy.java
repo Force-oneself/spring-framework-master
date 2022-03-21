@@ -54,11 +54,13 @@ class ObjenesisCglibAopProxy extends CglibAopProxy {
 
 	@Override
 	protected Object createProxyClassAndInstance(Enhancer enhancer, Callback[] callbacks) {
+		// 生成代理Class
 		Class<?> proxyClass = enhancer.createClass();
 		Object proxyInstance = null;
 
 		if (objenesis.isWorthTrying()) {
 			try {
+				// 实例化代理类
 				proxyInstance = objenesis.newInstance(proxyClass, enhancer.getUseCache());
 			}
 			catch (Throwable ex) {
@@ -70,12 +72,13 @@ class ObjenesisCglibAopProxy extends CglibAopProxy {
 		if (proxyInstance == null) {
 			// Regular instantiation via default constructor...
 			try {
-				Constructor<?> ctor = (this.constructorArgs != null ?
-						proxyClass.getDeclaredConstructor(this.constructorArgTypes) :
-						proxyClass.getDeclaredConstructor());
+				Constructor<?> ctor = (this.constructorArgs != null
+						? proxyClass.getDeclaredConstructor(this.constructorArgTypes)
+						: proxyClass.getDeclaredConstructor());
 				ReflectionUtils.makeAccessible(ctor);
-				proxyInstance = (this.constructorArgs != null ?
-						ctor.newInstance(this.constructorArgs) : ctor.newInstance());
+				proxyInstance = (this.constructorArgs != null
+						? ctor.newInstance(this.constructorArgs)
+						: ctor.newInstance());
 			}
 			catch (Throwable ex) {
 				throw new AopConfigException("Unable to instantiate proxy using Objenesis, " +

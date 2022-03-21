@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
  * @description AopBeanAspectj
  * @date 2021-07-12
  **/
-//@Aspect
+@Aspect
 //@Component
 public class AopBeanAspectjTwo {
 

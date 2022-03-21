@@ -105,7 +105,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 
 	/**
-	 * 用于配置此代理的配置.
+	 * 用于配置此代理的配置.AOP 中传递的是ProxyFactory
 	 */
 	protected final AdvisedSupport advised;
 
@@ -298,6 +298,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 					}
 				}
 			}
+			// 递归调用父类检查
 			doValidateClass(proxySuperClass.getSuperclass(), proxyClassLoader, ifcs);
 		}
 	}
@@ -307,6 +308,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 		// 是否每次都调用该代理
 		boolean exposeProxy = this.advised.isExposeProxy();
 		boolean isFrozen = this.advised.isFrozen();
+		// 目标对象不可变
 		boolean isStatic = this.advised.getTargetSource().isStatic();
 
 		// Choose an "aop" interceptor (used for AOP calls).
@@ -338,7 +340,8 @@ class CglibAopProxy implements AopProxy, Serializable {
 				aopInterceptor,  // for normal advice
 				targetInterceptor,  // invoke target without considering advice, if optimized
 				new SerializableNoOp(),  // no override for methods mapped to this
-				targetDispatcher, this.advisedDispatcher,
+				targetDispatcher,
+				this.advisedDispatcher,
 				new EqualsInterceptor(this.advised),
 				new HashCodeInterceptor(this.advised)
 		};
