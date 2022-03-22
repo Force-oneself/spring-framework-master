@@ -43,6 +43,10 @@ import org.springframework.util.Assert;
 @SuppressWarnings("serial")
 public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 
+
+	/**
+	 * advice为空时则需要name获取advice
+	 */
 	@Nullable
 	private String adviceBeanName;
 

@@ -1,5 +1,7 @@
 package org.springframework.demo.bean;
 
+import org.springframework.transaction.annotation.Transactional;
+
 /**
  * @author Force-oneself
  * @description AopBean
@@ -7,6 +9,7 @@ package org.springframework.demo.bean;
  **/
 public class AopBean {
 
+	@Transactional(rollbackFor = Exception.class)
     public void aop() {
         System.out.println("target method");
     }
