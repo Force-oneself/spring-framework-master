@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-Implementation-Title: spring-beans
-Automatic-Module-Name: spring.beans
-Implementation-Version: 5.3.0-M2
-Created-By: 1.8.0_291 (Oracle Corporation)
-

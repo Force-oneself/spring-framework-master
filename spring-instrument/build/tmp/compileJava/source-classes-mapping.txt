@@ -1,2 +1,0 @@
-org/springframework/instrument/InstrumentationSavingAgent.java
- org.springframework.instrument.InstrumentationSavingAgent
