@@ -35,7 +35,8 @@ public class ProxyConfig implements Serializable {
 
 
 	/**
-	 * 是否直接代理对象本身，true说明代理其接口
+	 * 是否直接代理对象本身，将此设置为“true”以强制代理 TargetSource 的公开目标类。如果该目标类是一个接口，
+	 * 将为给定接口创建一个 JDK 代理。如果该目标类是任何其他类，将为给定类创建一个 CGLIB 代理
 	 */
 	private boolean proxyTargetClass = false;
 

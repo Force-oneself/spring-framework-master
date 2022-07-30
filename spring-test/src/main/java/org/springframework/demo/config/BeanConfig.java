@@ -4,11 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.demo.bean.AopBean;
-import org.springframework.demo.bean.AutowiredBean;
-import org.springframework.demo.bean.ChildBean;
-import org.springframework.demo.bean.DemoFactoryBean;
-import org.springframework.demo.bean.ExpandBean;
+import org.springframework.demo.bean.*;
 
 /**
  * @author Force-oneself
@@ -40,9 +36,14 @@ public class BeanConfig {
         return new ChildBean(autowiredBean());
     }
 
-    @Bean
+//    @Bean
     public AopBean aopBean() {
         return new AopBean();
+    }
+
+	@Bean
+    public AopJdkService aopJdkBean() {
+        return new AopJdkBean();
     }
 
 //    @Bean

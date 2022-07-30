@@ -230,6 +230,7 @@ public abstract class AopUtils {
 		MethodMatcher methodMatcher = pc.getMethodMatcher();
 		if (methodMatcher == MethodMatcher.TRUE) {
 			// No need to iterate the methods if we're matching any method anyway...
+			// 如果我们仍然匹配任何方法，则无需迭代方法
 			return true;
 		}
 
@@ -247,9 +248,9 @@ public abstract class AopUtils {
 		for (Class<?> clazz : classes) {
 			Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);
 			for (Method method : methods) {
-				if (introductionAwareMethodMatcher != null ?
-						introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions) :
-						methodMatcher.matches(method, targetClass)) {
+				if (introductionAwareMethodMatcher != null
+						? introductionAwareMethodMatcher.matches(method, targetClass, hasIntroductions)
+						: methodMatcher.matches(method, targetClass)) {
 					return true;
 				}
 			}

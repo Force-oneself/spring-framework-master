@@ -186,8 +186,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 
 
 	/**
-	 * Check whether this pointcut is ready to match,
-	 * lazily building the underlying AspectJ pointcut expression.
+	 * 检查这个切入点是否准备好匹配，懒惰地构建底层的 AspectJ 切入点表达式
 	 */
 	private PointcutExpression obtainPointcutExpression() {
 		if (getExpression() == null) {
@@ -215,9 +214,10 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	}
 
 	/**
-	 * Build the underlying AspectJ pointcut expression.
+	 * 构建底层 AspectJ 切入点表达式。
 	 */
 	private PointcutExpression buildPointcutExpression(@Nullable ClassLoader classLoader) {
+		// 切入点解析器
 		PointcutParser parser = initializePointcutParser(classLoader);
 		PointcutParameter[] pointcutParameters = new PointcutParameter[this.pointcutParameterNames.length];
 		for (int i = 0; i < pointcutParameters.length; i++) {
@@ -235,7 +235,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	}
 
 	/**
-	 * Initialize the underlying AspectJ pointcut parser.
+	 * 初始化底层 AspectJ 切入点解析器。
 	 */
 	private PointcutParser initializePointcutParser(@Nullable ClassLoader classLoader) {
 		PointcutParser parser = PointcutParser
@@ -247,10 +247,9 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 
 
 	/**
-	 * If a pointcut expression has been specified in XML, the user cannot
-	 * write {@code and} as "&&" (though &amp;&amp; will work).
-	 * We also allow {@code and} between two pointcut sub-expressions.
-	 * <p>This method converts back to {@code &&} for the AspectJ pointcut parser.
+	 * 如果在 xml 中指定了切入点表达式，则用户不能将 {@code and} 写为“&&”（尽管 && 会起作用）。
+	 * 我们还允许在两个切入点子表达式之间使用 {@code and}。
+	 * <p>对于 aspectj 切入点解析器，此方法转换回 {@code &&}。
 	 */
 	private String replaceBooleanOperators(String pcExpr) {
 		String result = StringUtils.replace(pcExpr, " and ", " && ");

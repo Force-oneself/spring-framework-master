@@ -47,8 +47,11 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
 	 */
 	public DefaultAdvisorAdapterRegistry() {
+		// 执行方法前
 		registerAdvisorAdapter(new MethodBeforeAdviceAdapter());
+		// 执行返回值后
 		registerAdvisorAdapter(new AfterReturningAdviceAdapter());
+		// 执行异常
 		registerAdvisorAdapter(new ThrowsAdviceAdapter());
 	}
 
