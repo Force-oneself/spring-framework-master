@@ -1331,6 +1331,7 @@ public abstract class ClassUtils {
 	 */
 	public static boolean isUserLevelMethod(Method method) {
 		Assert.notNull(method, "Method must not be null");
+		// 桥接 或者 非合成且非Groovy对象方法
 		return (method.isBridge() || (!method.isSynthetic() && !isGroovyObjectMethod(method)));
 	}
 
