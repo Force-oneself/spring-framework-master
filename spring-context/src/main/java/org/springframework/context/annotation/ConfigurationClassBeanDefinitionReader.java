@@ -183,9 +183,8 @@ class ConfigurationClassBeanDefinitionReader {
 	}
 
 	/**
-	 * Read the given {@link BeanMethod}, registering bean definitions
-	 * with the BeanDefinitionRegistry based on its contents.
-	 * for RequiredAnnotationBeanPostProcessor.SKIP_REQUIRED_CHECK_ATTRIBUTE
+	 * 读取给定的｛@link BeanMethod｝，注册bean定义基于其内容，使用BeanDefinitionRegistry，对于
+	 * RequiredAnnotationBeanPostProcessor.SKIP_REQUIRED_CHECK_ATTRIBUTE
 	 */
 	@SuppressWarnings("deprecation")
 	private void loadBeanDefinitionsForBeanMethod(BeanMethod beanMethod) {

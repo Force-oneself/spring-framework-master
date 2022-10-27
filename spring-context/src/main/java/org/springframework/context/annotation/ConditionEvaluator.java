@@ -115,6 +115,7 @@ class ConditionEvaluator {
 			boolean isSame = requiredPhase == null || requiredPhase == phase;
 			if (isSame
 					// 配置模式与参数一致，即执行
+					// Force-Spring @Conditional 实现入口
 					&& !condition.matches(this.context, metadata)) {
 				return true;
 			}

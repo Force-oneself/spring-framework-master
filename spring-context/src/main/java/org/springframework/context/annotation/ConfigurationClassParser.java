@@ -291,9 +291,9 @@ class ConfigurationClassParser {
         // 处理@ComponentScan和@ComponentScans注解
         Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
                 sourceClass.getMetadata(), ComponentScans.class, ComponentScan.class);
-        if (!componentScans.isEmpty() &&
+        if (!componentScans.isEmpty()
                 // 扫描非@Configuration的相关的组件,会根据@Conditional筛选是否添加，依然能添加@Confinguration
-                !this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
+				&& !this.conditionEvaluator.shouldSkip(sourceClass.getMetadata(), ConfigurationPhase.REGISTER_BEAN)) {
             for (AnnotationAttributes componentScan : componentScans) {
                 // 配置类用@ComponentScan 注释 -> 立即执行扫描
                 Set<BeanDefinitionHolder> scannedBeanDefinitions =
@@ -344,8 +344,8 @@ class ConfigurationClassParser {
         // Process superclass, if any
         if (sourceClass.getMetadata().hasSuperClass()) {
             String superclass = sourceClass.getMetadata().getSuperClassName();
-            if (superclass != null && !superclass.startsWith("java") &&
-                    !this.knownSuperclasses.containsKey(superclass)) {
+            if (superclass != null && !superclass.startsWith("java")
+					&& !this.knownSuperclasses.containsKey(superclass)) {
                 this.knownSuperclasses.put(superclass, configClass);
                 // Superclass found, return its annotation metadata and recurse
                 // Force-Spring 重点：有父类开始俄罗斯套娃了
@@ -466,8 +466,8 @@ class ConfigurationClassParser {
         boolean ignoreResourceNotFound = propertySource.getBoolean("ignoreResourceNotFound");
 
         Class<? extends PropertySourceFactory> factoryClass = propertySource.getClass("factory");
-        PropertySourceFactory factory = (factoryClass == PropertySourceFactory.class ?
-                DEFAULT_PROPERTY_SOURCE_FACTORY : BeanUtils.instantiateClass(factoryClass));
+        PropertySourceFactory factory = (factoryClass == PropertySourceFactory.class
+				? DEFAULT_PROPERTY_SOURCE_FACTORY : BeanUtils.instantiateClass(factoryClass));
 
         for (String location : locations) {
             try {
@@ -496,8 +496,9 @@ class ConfigurationClassParser {
             // We've already added a version, we need to extend it
             PropertySource<?> existing = propertySources.get(name);
             if (existing != null) {
-                PropertySource<?> newSource = (propertySource instanceof ResourcePropertySource ?
-                        ((ResourcePropertySource) propertySource).withResourceName() : propertySource);
+                PropertySource<?> newSource = (propertySource instanceof ResourcePropertySource
+						? ((ResourcePropertySource) propertySource).withResourceName()
+						: propertySource);
                 if (existing instanceof CompositePropertySource) {
                     ((CompositePropertySource) existing).addFirstPropertySource(newSource);
                 } else {
@@ -553,16 +554,20 @@ class ConfigurationClassParser {
         if (visited.add(sourceClass)) {
             for (SourceClass annotation : sourceClass.getAnnotations()) {
                 String annName = annotation.getMetadata().getClassName();
+				// 非@Import注解则递归去查
                 if (!annName.equals(Import.class.getName())) {
                     collectImports(annotation, imports, visited);
                 }
             }
+			// 将要导入的bean加入
             imports.addAll(sourceClass.getAnnotationAttributes(Import.class.getName(), "value"));
         }
     }
 
-    private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
-                                Collection<SourceClass> importCandidates, Predicate<String> exclusionFilter,
+	private void processImports(ConfigurationClass configClass, SourceClass currentSourceClass,
+                                Collection<SourceClass> importCandidates,
+								// org.springframework.context.annotation.ConfigurationClassParser.DEFAULT_EXCLUSION_FILTER
+								Predicate<String> exclusionFilter,
                                 boolean checkForCircularImports) {
 
         if (importCandidates.isEmpty()) {
@@ -588,6 +593,7 @@ class ConfigurationClassParser {
                         if (selector instanceof DeferredImportSelector) {
                             this.deferredImportSelectorHandler.handle(configClass, (DeferredImportSelector) selector);
                         } else {
+							// Force-Spring 拓展点：ImportSelector.selectImports
                             String[] importClassNames = selector.selectImports(currentSourceClass.getMetadata());
                             Collection<SourceClass> importSourceClasses = asSourceClasses(importClassNames, exclusionFilter);
                             // Force-Spring 重点：processImports 套娃
@@ -603,7 +609,7 @@ class ConfigurationClassParser {
                                         this.environment, this.resourceLoader, this.registry);
                         configClass.addImportBeanDefinitionRegistrar(registrar, currentSourceClass.getMetadata());
                     } else {
-                        // 候选类不是 ImportSelector 或 ImportBeanDefinitionRegistrar -> 将其作为@Configuration 类处理
+                        // 候选类不是 ImportSelector 或 ImportBeanDefinitionRegistrar -> 可将其视为 @Configuration 类处理
                         this.importStack.registerImport(
                                 currentSourceClass.getMetadata(), candidate.getMetadata().getClassName());
                         // Force-Spring 重点：processConfigurationClass 套娃
@@ -784,6 +790,7 @@ class ConfigurationClassParser {
                     // 排序
                     deferredImports.sort(DEFERRED_IMPORT_COMPARATOR);
                     deferredImports.forEach(handler::register);
+					//
                     handler.processGroupImports();
                 }
             } finally {
