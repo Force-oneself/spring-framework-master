@@ -179,14 +179,14 @@ public abstract class AbstractFallbackTransactionAttributeSource
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
 		// First try is the method in the target class.
-		// 首先尝试目标类中的方法。
+		// 首先尝试目标类中的方法。方法上@Transactional注解
 		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
 		if (txAttr != null) {
 			return txAttr;
 		}
 
 		// Second try is the transaction attribute on the target class.
-		// 第二次尝试是目标类上的事务属性。
+		// 第二次尝试是目标类上的事务属性。类上@Transactional注解
 		txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());
 		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 			return txAttr;
@@ -194,13 +194,13 @@ public abstract class AbstractFallbackTransactionAttributeSource
 
 		if (specificMethod != method) {
 			// Fallback is to look at the original method.
-			// 回退是查看原始方法。
+			// 回退是查看原始方法。方法上@Transactional注解
 			txAttr = findTransactionAttribute(method);
 			if (txAttr != null) {
 				return txAttr;
 			}
 			// Last fallback is the class of the original method.
-			// 最后一个回退是原始方法的类。
+			// 最后一个回退是原始方法的类。类上@Transactional注解
 			txAttr = findTransactionAttribute(method.getDeclaringClass());
 			if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 				return txAttr;

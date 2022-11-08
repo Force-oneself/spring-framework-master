@@ -53,6 +53,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 
 		// This is somewhat tricky... We have to process introductions first,
 		// but we need to preserve order in the ultimate list.
+		// 这有点棘手…我们必须先处理介绍，但我们需要在最终列表中保持秩序。
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
 		Advisor[] advisors = config.getAdvisors();
 		List<Object> interceptorList = new ArrayList<>(advisors.length);
@@ -81,6 +82,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 						if (mm.isRuntime()) {
 							// Creating a new object instance in the getInterceptors() method
 							// isn't a problem as we normally cache created chains.
+							// 在getInterceptors（）方法中创建新的对象实例，这不是问题，因为我们通常缓存创建的链。
 							for (MethodInterceptor interceptor : interceptors) {
 								interceptorList.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm));
 							}

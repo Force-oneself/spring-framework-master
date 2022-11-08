@@ -15,10 +15,10 @@ import org.springframework.demo.config.BeanConfig;
 public class AopDemo {
 
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(TxConfig.class);
-//		AopJdkService bean = context.getBean(AopJdkService.class);
-//        bean.aop();
-		TxBean bean = context.getBean(TxBean.class);
-		bean.tx();
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig.class);
+		AopJdkService bean = context.getBean(AopJdkService.class);
+        bean.aop();
+//		TxBean bean = context.getBean(TxBean.class);
+//		bean.tx();
 	}
 }

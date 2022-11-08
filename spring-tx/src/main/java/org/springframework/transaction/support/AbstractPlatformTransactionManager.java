@@ -349,10 +349,12 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 		// 如果当前线程已经存在事务，需要特殊处理
 		if (isExistingTransaction(transaction)) {
 			// Existing transaction found -> check propagation behavior to find out how to behave.
+			// 找到现有事务 -> 检查传播行为以了解行为方式。
 			return handleExistingTransaction(def, transaction, debugEnabled);
 		}
 
 		// Check definition settings for new transaction.
+		// 检查新事务的定义设置。
 		if (def.getTimeout() < TransactionDefinition.TIMEOUT_DEFAULT) {
 			throw new InvalidTimeoutException("Invalid transaction timeout", def.getTimeout());
 		}
@@ -362,17 +364,20 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 			throw new IllegalTransactionStateException(
 					"No existing transaction found for transaction marked with propagation 'mandatory'");
 		}
-		else if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRED ||
-				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW ||
-				def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {
+		else if (def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRED
+				|| def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW
+				|| def.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) {
+			// 模版方法 挂起事务
 			SuspendedResourcesHolder suspendedResources = suspend(null);
 			if (debugEnabled) {
 				logger.debug("Creating new transaction with name [" + def.getName() + "]: " + def);
 			}
 			try {
+				// 开启事务
 				return startTransaction(def, transaction, debugEnabled, suspendedResources);
 			}
 			catch (RuntimeException | Error ex) {
+				// 恢复事务
 				resume(null, suspendedResources);
 				throw ex;
 			}
@@ -403,7 +408,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
-	 * Create a TransactionStatus for an existing transaction.
+	 * 为现有事务创建TransactionStatus。
 	 */
 	private TransactionStatus handleExistingTransaction(
 			TransactionDefinition definition, Object transaction, boolean debugEnabled)
@@ -523,7 +528,7 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
-	 * Initialize transaction synchronization as appropriate.
+	 * 根据需要初始化事务同步。
 	 */
 	protected void prepareSynchronization(DefaultTransactionStatus status, TransactionDefinition definition) {
 		if (status.isNewSynchronization()) {
@@ -555,10 +560,10 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 
 
 	/**
-	 * Suspend the given transaction. Suspends transaction synchronization first,
-	 * then delegates to the {@code doSuspend} template method.
+	 * 挂起给定的事务。首先暂停事务同步，然后委托给｛@code doSuspend｝模板方法。
+	 *
 	 * @param transaction the current transaction object
-	 * (or {@code null} to just suspend active synchronizations, if any)
+	 *                    (or {@code null} to just suspend active synchronizations, if any)
 	 * @return an object that holds suspended resources
 	 * (or {@code null} if neither transaction nor synchronization active)
 	 * @see #doSuspend
@@ -602,12 +607,12 @@ public abstract class AbstractPlatformTransactionManager implements PlatformTran
 	}
 
 	/**
-	 * Resume the given transaction. Delegates to the {@code doResume}
-	 * template method first, then resuming transaction synchronization.
-	 * @param transaction the current transaction object
+	 * 恢复给定的事务。｛@code doResume｝的委托模板方法，然后恢复事务同步。
+	 *
+	 * @param transaction     the current transaction object
 	 * @param resourcesHolder the object that holds suspended resources,
-	 * as returned by {@code suspend} (or {@code null} to just
-	 * resume synchronizations, if any)
+	 *                        as returned by {@code suspend} (or {@code null} to just
+	 *                        resume synchronizations, if any)
 	 * @see #doResume
 	 * @see #suspend
 	 */
