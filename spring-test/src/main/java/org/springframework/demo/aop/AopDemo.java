@@ -4,6 +4,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.demo.aop.tx.TxBean;
 import org.springframework.demo.aop.tx.TxConfig;
 import org.springframework.demo.bean.AopBean;
+import org.springframework.demo.bean.AopCGLibService;
 import org.springframework.demo.bean.AopJdkService;
 import org.springframework.demo.config.BeanConfig;
 
@@ -16,9 +17,12 @@ public class AopDemo {
 
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(BeanConfig.class);
-		AopJdkService bean = context.getBean(AopJdkService.class);
-        bean.aop();
-//		TxBean bean = context.getBean(TxBean.class);
-//		bean.tx();
+		// jdk
+		AopJdkService aopJdkService = context.getBean(AopJdkService.class);
+		aopJdkService.aop();
+
+		// cglib
+		AopCGLibService aopCGLibService = context.getBean(AopCGLibService.class);
+		aopCGLibService.aop();
 	}
 }

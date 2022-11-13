@@ -46,6 +46,11 @@ public class BeanConfig {
         return new AopJdkBean();
     }
 
+	@Bean
+	public AopCGLibService aopCGLibService() {
+		return new AopCGLibService();
+	}
+
 //    @Bean
     public DemoFactoryBean demoFactoryBean() {
         return new DemoFactoryBean();

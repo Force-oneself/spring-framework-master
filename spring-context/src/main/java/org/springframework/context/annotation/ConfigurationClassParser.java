@@ -807,7 +807,7 @@ class ConfigurationClassParser {
         private final Map<AnnotationMetadata, ConfigurationClass> configurationClasses = new HashMap<>();
 
         public void register(DeferredImportSelectorHolder deferredImport) {
-            // 调用DeferredImportSelector.getImportGroup()获取组
+            // Force-Spring 拓展点 DeferredImportSelector.getImportGroup()
             Class<? extends Group> group = deferredImport.getImportSelector().getImportGroup();
             DeferredImportSelectorGrouping grouping = this.groupings.computeIfAbsent(
                     (group != null ? group : deferredImport),
@@ -893,9 +893,11 @@ class ConfigurationClassParser {
         public Iterable<Group.Entry> getImports() {
             for (DeferredImportSelectorHolder deferredImport : this.deferredImports) {
                 // 对DeferredImportSelector进行分组处理
+				// Force-Spring 拓展点 DeferredImportSelector.Group.process()
                 this.group.process(deferredImport.getConfigurationClass().getMetadata(),
                         deferredImport.getImportSelector());
             }
+			// Force-Spring 拓展点 DeferredImportSelector.Group.selectImports()
             return this.group.selectImports();
         }
 

@@ -20,7 +20,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class AopBeanAspectj {
 
-    @Pointcut("execution(* org.springframework.demo.bean.AopJdkService.*(..))")
+    @Pointcut("execution(* org.springframework.demo.bean.AopJdkService.*(..) " +
+			"｜｜ * org.springframework.demo.bean.AopCGLibService.*(..))")
     public void pointCut() {
     }
 
