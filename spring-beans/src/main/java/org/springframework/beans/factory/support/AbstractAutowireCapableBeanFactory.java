@@ -679,8 +679,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		if (earlySingletonExposure) {
 			// 只在一二级缓存中查询
 			Object earlySingletonReference = getSingleton(beanName, false);
+			// 不为null 说明该Bean已被其他Bean注入
 			if (earlySingletonReference != null) {
 				if (exposedObject == bean) {
+					// 说明未被代理
 					exposedObject = earlySingletonReference;
 				} else if (!this.allowRawInjectionDespiteWrapping && hasDependentBean(beanName)) {
 					String[] dependentBeans = getDependentBeans(beanName);
