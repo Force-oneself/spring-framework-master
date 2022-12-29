@@ -108,6 +108,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		return (parameter.hasParameterAnnotation(ModelAttribute.class) ||
+				// 注解非必须的时候 可以将参数设置到给定到对象中
 				(this.annotationNotRequired && !BeanUtils.isSimpleProperty(parameter.getParameterType())));
 	}
 
@@ -212,6 +213,7 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 		MethodParameter nestedParameter = parameter.nestedIfOptional();
 		Class<?> clazz = nestedParameter.getNestedParameterType();
 
+		// 拿到入参的构造器
 		Constructor<?> ctor = BeanUtils.findPrimaryConstructor(clazz);
 		if (ctor == null) {
 			Constructor<?>[] ctors = clazz.getConstructors();
@@ -252,12 +254,15 @@ public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResol
 	protected Object constructAttribute(Constructor<?> ctor, String attributeName, MethodParameter parameter,
 			WebDataBinderFactory binderFactory, NativeWebRequest webRequest) throws Exception {
 
+		// 默认构造函数
 		if (ctor.getParameterCount() == 0) {
 			// A single default constructor -> clearly a standard JavaBeans arrangement.
+			// 单个默认构造函数 -> 显然是标准的 JavaBeans 安排
 			return BeanUtils.instantiateClass(ctor);
 		}
 
 		// A single data class constructor -> resolve constructor arguments from request parameters.
+		// 单个数据类构造函数 -> 从请求参数中解析构造函数参数
 		ConstructorProperties cp = ctor.getAnnotation(ConstructorProperties.class);
 		String[] paramNames = (cp != null ? cp.value() : parameterNameDiscoverer.getParameterNames(ctor));
 		Assert.state(paramNames != null, () -> "Cannot resolve parameter names for constructor " + ctor);

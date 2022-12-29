@@ -60,8 +60,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 
 /**
- * A base class for resolving method argument values by reading from the body of
- * a request with {@link HttpMessageConverter HttpMessageConverters}.
+ * 一个基类，用于通过从请求正文中读取来解析方法参数值
+ * {@link HttpMessageConverter HttpMessageConverters}.
  *
  * @author Arjen Poutsma
  * @author Rossen Stoyanchev
