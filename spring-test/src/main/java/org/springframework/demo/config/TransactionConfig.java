@@ -1,8 +1,9 @@
-package org.springframework.demo.aop.tx;
+package org.springframework.demo.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.demo.aop.tx.TransactionalService;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -12,6 +13,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@ComponentScan
-public class TxConfig {
+@ComponentScan({"org.springframework.demo.aop.tx"})
+public class TransactionConfig {
+
+	@Bean
+	public TransactionalService aopBean() {
+		return new TransactionalService();
+	}
 }

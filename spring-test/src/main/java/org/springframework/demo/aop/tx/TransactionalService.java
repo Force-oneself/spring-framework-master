@@ -1,4 +1,4 @@
-package org.springframework.demo.bean;
+package org.springframework.demo.aop.tx;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @description AopBean
  * @date 2021-07-12
  **/
-public class AopBean {
+public class TransactionalService {
 
 	@Transactional(rollbackFor = Exception.class)
     public void aop() {

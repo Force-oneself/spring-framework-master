@@ -1,4 +1,4 @@
-package org.springframework.demo.aop;
+package org.springframework.demo.aop.aspectj;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -18,10 +18,10 @@ import org.springframework.stereotype.Component;
  **/
 @Aspect
 @Component
-public class AopBeanAspectj {
+public class AspectjBean {
 
-    @Pointcut("execution(* org.springframework.demo.bean.AopJdkService.*(..) " +
-			"｜｜ * org.springframework.demo.bean.AopCGLibService.*(..))")
+    @Pointcut("execution(public * org.springframework.demo.aop.AopJdkService.*(..)) " +
+			"|| execution(public * org.springframework.demo.aop.AopCGLibService.*(..)) ")
     public void pointCut() {
     }
 
