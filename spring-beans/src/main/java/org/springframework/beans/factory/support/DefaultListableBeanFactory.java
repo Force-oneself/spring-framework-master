@@ -312,6 +312,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Return the autowire candidate resolver for this BeanFactory (never {@code null}).
 	 */
 	public AutowireCandidateResolver getAutowireCandidateResolver() {
+		// SimpleAutowireCandidateResolver
 		return this.autowireCandidateResolver;
 	}
 
@@ -1281,13 +1282,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
 		// ObjectFactory和ObjectProvider接口可以提供依赖的Bean
-		else if (ObjectFactory.class == descriptor.getDependencyType() ||
-				ObjectProvider.class == descriptor.getDependencyType()) {
+		else if (ObjectFactory.class == descriptor.getDependencyType()
+				|| ObjectProvider.class == descriptor.getDependencyType()) {
 			return new DependencyObjectProvider(descriptor, requestingBeanName);
 		}
+		// javax.inject.Provider
 		else if (javaxInjectProviderClass == descriptor.getDependencyType()) {
 			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
 		}
+		// 正常的Bean注入
 		else {
 			// 如果注入点需要，则为实际依赖项目标的延迟解析构建代理。默认实现只返回null
 			// Force-Spring 知识点：@Lazy的实现

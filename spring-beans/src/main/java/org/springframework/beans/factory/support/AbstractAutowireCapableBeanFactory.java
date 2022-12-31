@@ -1594,7 +1594,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 					// 在优先处理后处理器的情况下，不允许急切的init进行类型匹配.
 					boolean eager = !(bw.getWrappedInstance() instanceof PriorityOrdered);
 					DependencyDescriptor desc = new AutowireByTypeDependencyDescriptor(methodParam, eager);
-					// 解析依赖
+					// Force-Spring 重点：根据类型解析依赖注入
 					Object autowiredArgument = resolveDependency(desc, beanName, autowiredBeanNames, converter);
 					if (autowiredArgument != null) {
 						pvs.add(propertyName, autowiredArgument);

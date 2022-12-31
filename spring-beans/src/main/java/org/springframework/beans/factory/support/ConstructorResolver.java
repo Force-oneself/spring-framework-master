@@ -130,13 +130,18 @@ class ConstructorResolver {
 		BeanWrapperImpl bw = new BeanWrapperImpl();
 		this.beanFactory.initBeanWrapper(bw);
 
+		// 实际实例化的构造器
 		Constructor<?> constructorToUse = null;
 		ArgumentsHolder argsHolderToUse = null;
+		// 实际实例化需要的参数Bean
 		Object[] argsToUse = null;
 
+		// 外部指定已传入构造器参数
 		if (explicitArgs != null) {
 			argsToUse = explicitArgs;
-		} else {
+		}
+		// 正常都是走这个
+		else {
 			Object[] argsToResolve = null;
 			synchronized (mbd.constructorArgumentLock) {
 				constructorToUse = (Constructor<?>) mbd.resolvedConstructorOrFactoryMethod;
@@ -153,8 +158,10 @@ class ConstructorResolver {
 			}
 		}
 
+		// 构造器/构造参数为null 说明需要推断出构造或者自动注入参数
 		if (constructorToUse == null || argsToUse == null) {
 			// Take specified constructors, if any.
+			// 采用指定的构造函数，如果有的话
 			Constructor<?>[] candidates = chosenCtors;
 			if (candidates == null) {
 				Class<?> beanClass = mbd.getBeanClass();
@@ -171,7 +178,7 @@ class ConstructorResolver {
 									"] from ClassLoader [" + beanClass.getClassLoader() + "] failed", ex);
 				}
 			}
-			// 只有一个构造方法
+			// 只有一个默认构造方法，直接实例化返回就行
 			if (candidates.length == 1
 					&& explicitArgs == null
 					// 不存构造方法参数值
@@ -222,6 +229,7 @@ class ConstructorResolver {
 				if (constructorToUse != null && argsToUse != null && argsToUse.length > parameterCount) {
 					// Already found greedy constructor that can be satisfied ->
 					// do not look any further, there are only less greedy constructors left.
+					// 已经找到可以满足的贪心构造函数 -> 不用再找了，只剩下比较少的贪心构造函数了
 					break;
 				}
 				if (parameterCount < minNrOfArgs) {
@@ -258,6 +266,7 @@ class ConstructorResolver {
 					}
 				} else {
 					// Explicit arguments given -> arguments length must match exactly.
+					// 给出的显式参数 -> 参数长度必须完全匹配
 					if (parameterCount != explicitArgs.length) {
 						continue;
 					}
@@ -691,6 +700,7 @@ class ConstructorResolver {
 			if (valueHolder.isConverted()) {
 				resolvedValues.addIndexedArgumentValue(index, valueHolder);
 			} else {
+				// Force-Spring 知识点：构造器注入
 				Object resolvedValue =
 						valueResolver.resolveValueIfNecessary("constructor argument", valueHolder.getValue());
 				ConstructorArgumentValues.ValueHolder resolvedValueHolder =
