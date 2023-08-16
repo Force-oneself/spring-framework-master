@@ -535,20 +535,17 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		try {
-			/**
-			 * 此处开始真正的创建Bean
-			 *
-			 * 1.判断创建的 bean 是否可以被实例化，这个类是否可以通过 ClassLoader 来载入，
-			 * 根据设置的 class 属性或根据 className 来解析 class。
-			 *
-			 * 2.对覆盖进行标记并验证，在 Spring 配置中存在 lookup-method 和 replace-method 的，
-			 * 这两个配置的加载时将配置统一存放在 BeanDefinition 中的 methodOverrides 属性里，
-			 * 这个方法的操作也是针对于这两个配置的；
-			 *
-			 * 3.应用初始化前的后处理器，最后创建 bean。
-			 * 在 createBean() 方法里执行完 resolveBeforeInstantiation 方法后，
-			 * 如果创建了代理且不为空的话就直接返回，否则需要进行常规 bean 的创建，
-			 * 这个创建过程是在 doCreateBean 中完成的
+			/*
+			  此处开始真正的创建Bean
+			  1.判断创建的 bean 是否可以被实例化，这个类是否可以通过 ClassLoader 来载入，
+			  根据设置的 class 属性或根据 className 来解析 class。
+			  2.对覆盖进行标记并验证，在 Spring 配置中存在 lookup-method 和 replace-method 的，
+			  这两个配置的加载时将配置统一存放在 BeanDefinition 中的 methodOverrides 属性里，
+			  这个方法的操作也是针对于这两个配置的；
+			  3.应用初始化前的后处理器，最后创建 bean。
+			  在 createBean() 方法里执行完 resolveBeforeInstantiation 方法后，
+			  如果创建了代理且不为空的话就直接返回，否则需要进行常规 bean 的创建，
+			  这个创建过程是在 doCreateBean 中完成的
 			 */
 			Object beanInstance = doCreateBean(beanName, mbdToUse, args);
 			if (logger.isTraceEnabled()) {
@@ -580,14 +577,14 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	protected Object doCreateBean(String beanName, RootBeanDefinition mbd, @Nullable Object[] args)
 			throws BeanCreationException {
 
-		/**
-		 * 1.RootBeanDefinition 是不是单例，如果是单例先移除缓存
-		 * 2.实例化 bean，将 RootBeanDefinition 转换为 BeanWrapper
-		 * 3.使用 MergedBeanDefinitionPostProcessor，Autowired注解 就是通过此方法实现类型的预解析；
-		 * 4.解决循环依赖问题
-		 * 5.在 populateBean() 中填充属性，配置在 XML 中的各种属性
-		 * 6.注册到 DisposableBean 中
-		 * 7.完成创建并返回 Bean 的实例
+		/*
+		  1.RootBeanDefinition 是不是单例，如果是单例先移除缓存
+		  2.实例化 bean，将 RootBeanDefinition 转换为 BeanWrapper
+		  3.使用 MergedBeanDefinitionPostProcessor，Autowired注解 就是通过此方法实现类型的预解析；
+		  4.解决循环依赖问题
+		  5.在 populateBean() 中填充属性，配置在 XML 中的各种属性
+		  6.注册到 DisposableBean 中
+		  7.完成创建并返回 Bean 的实例
 		 */
 
 		// ----------------------------------------------------
@@ -599,6 +596,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 		if (instanceWrapper == null) {
 			// 根据指定 bean 使用相应策略创建实例（正确情况会调用无参构造函数）
+			// Force-Spring 知识点：Bean实例化
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		// 获取实例化好的 Bean（Person person = new Person()），此处还未进行赋值
@@ -1233,12 +1231,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @see #instantiateBean
 	 */
 	protected BeanWrapper createBeanInstance(String beanName, RootBeanDefinition mbd, @Nullable Object[] args) {
-		/**
-		 * 可以看出如果在 RootBeanDefinition 中存在 factoryMethodName属性，或者说配置文件中配置了 factory-method，
-		 * 那么 Spring 会尝试使用 instantiateUsingFactoryMethod(beanName, mbd, args) 方法根据 RootBeanDefinition
-		 * 中的配置生成bean实例。然后再解析构造方法并进行实例化，Spring 会根据参数及类型判断使用哪个构造方法进行实例化。
-		 * 判断调用哪个构造方法的过程会采用缓存机制，如果已经解析过则不需要重复解析而是从 RootBeanDefinition 中的属性
-		 * resolvedConstructorOrFactoryMethod 缓存的值去取，否则需再次解析.
+		/*
+		  可以看出如果在 RootBeanDefinition 中存在 factoryMethodName属性，或者说配置文件中配置了 factory-method，
+		  那么 Spring 会尝试使用 instantiateUsingFactoryMethod(beanName, mbd, args) 方法根据 RootBeanDefinition
+		  中的配置生成bean实例。然后再解析构造方法并进行实例化，Spring 会根据参数及类型判断使用哪个构造方法进行实例化。
+		  判断调用哪个构造方法的过程会采用缓存机制，如果已经解析过则不需要重复解析而是从 RootBeanDefinition 中的属性
+		  resolvedConstructorOrFactoryMethod 缓存的值去取，否则需再次解析.
 		 */
 		// 获取 beanClass ， 要先确保 Bean 是正确的，已经解析到当前节点了
 		Class<?> beanClass = resolveBeanClass(mbd, beanName);
