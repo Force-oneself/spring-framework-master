@@ -309,7 +309,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			// 返回实例，FactoryBean 的情况下，并不是直接返回实例本身而是返回指定方法返回的实例
 			bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 		} else {
-			// 检查该bean是否处于创建中,存在则报错
+			// 检查该bean 多例Bean是否处于创建中,存在则报错
 			if (isPrototypeCurrentlyInCreation(beanName)) {
 				throw new BeanCurrentlyInCreationException(beanName);
 			}

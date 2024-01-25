@@ -607,7 +607,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 容器刷新完成
 				finishRefresh();
 			}
-
 			catch (BeansException ex) {
 				if (logger.isWarnEnabled()) {
 					logger.warn("Exception encountered during context initialization - " +
@@ -626,7 +625,6 @@ public abstract class AbstractApplicationContext extends DefaultResourceLoader
 				// 抛出异常
 				throw ex;
 			}
-
 			finally {
 				// Reset common introspection caches in Spring's core, since we
 				// might not ever need metadata for singleton beans anymore...

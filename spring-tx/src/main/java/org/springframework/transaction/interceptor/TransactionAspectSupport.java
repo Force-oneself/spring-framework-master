@@ -333,6 +333,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		// If the transaction attribute is null, the method is non-transactional.
 		// 如果事务属性为空，则该方法为非事务性 AnnotationTransactionAttributeSource
 		TransactionAttributeSource tas = getTransactionAttributeSource();
+		// 这里将会解析事物相关注解到TransactionAttribute(例如：@Transactional)
 		final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
 		// 获取事务管理器
 		final TransactionManager tm = determineTransactionManager(txAttr);
@@ -386,6 +387,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 
 			if (retVal != null && vavrPresent && VavrDelegate.isVavrTry(retVal)) {
 				// Set rollback-only in case of Vavr failure matching our rollback rules...
+				// 仅在Vavr故障符合我们的回滚规则的情况下设置回滚。。。
 				TransactionStatus status = txInfo.getTransactionStatus();
 				if (status != null && txAttr != null) {
 					retVal = VavrDelegate.evaluateTryFailure(retVal, txAttr, status);
@@ -586,6 +588,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 		if (txAttr != null) {
 			if (tm != null) {
 				// 事务管理器获取事务状态
+				// Force-Spring 重点：事物传播性原理
 				status = tm.getTransaction(txAttr);
 			}
 			else {

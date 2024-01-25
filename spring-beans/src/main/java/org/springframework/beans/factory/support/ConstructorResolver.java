@@ -212,7 +212,7 @@ class ConstructorResolver {
 				// 获取BeanDefinition的构造参数值
 				ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
 				resolvedValues = new ConstructorArgumentValues();
-				// 解析构造参数
+				// Force-Spring 知识点：解析构造参数
 				minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 			}
 
@@ -526,6 +526,7 @@ class ConstructorResolver {
 				if (mbd.hasConstructorArgumentValues()) {
 					ConstructorArgumentValues cargs = mbd.getConstructorArgumentValues();
 					resolvedValues = new ConstructorArgumentValues();
+					// Force-Spring 知识点：构造器参数解析
 					minNrOfArgs = resolveConstructorArguments(beanName, mbd, bw, cargs, resolvedValues);
 				} else {
 					minNrOfArgs = 0;

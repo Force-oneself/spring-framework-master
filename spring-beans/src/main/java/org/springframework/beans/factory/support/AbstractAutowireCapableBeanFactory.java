@@ -1252,7 +1252,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 返回实例为null，会包装NullBean返回
 			return obtainFromSupplier(instanceSupplier, beanName);
 		}
-		// 若工厂方法不为空则使用工厂方法初始化
+		// 若工厂方法不为空则使用工厂方法实例化
 		if (mbd.getFactoryMethodName() != null) {
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
